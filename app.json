@@ -2,6 +2,8 @@
   "expo": {
     "name": "communi-frontend",
     "slug": "communi-frontend",
+    "plugins": ["expo-router"],
+    "scheme": "com.communi.app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,6 +25,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
