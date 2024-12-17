@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useRoute } from '@react-navigation/native';  // Correct hook for accessing route params
-import axios from 'axios';
+import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import styles from '../styles/styles';
 
 const questionsData = [
@@ -28,27 +29,20 @@ const questionsData = [
 ];
 
 const QuestionsScreen = () => {
-  const route = useRoute();  // Access route params using useRoute
-  const { userData } = route.params || {};  // Extract userData from route params
-
-  // Check if userData exists
-  if (!userData) {
-    return <Text>Failed to load user data.</Text>;
-  }
+  const navigation = useNavigation();
+  const route = useRoute();
+  const router = useRouter();
+  const { userData } = route.params || {};
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [mbtiType, setMbtiType] = useState('');
 
   const handleAnswer = (score) => {
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestion] = score;
     setAnswers(updatedAnswers);
 
-    if (currentQuestion === questionsData.length - 1) {
-      const mbtiType = calculateMBTI(updatedAnswers);
-      setMbtiType(mbtiType);
-    } else {
+    if (currentQuestion < questionsData.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };
@@ -67,31 +61,20 @@ const QuestionsScreen = () => {
     return extroverted + sensing + thinking + judging;
   };
 
-  const handleTestSubmit = async () => {
-    if (!userData || !userData.email) {
-      console.error('User data or email is not available');
+  const handleTestSubmit = () => {
+    if (answers.length < questionsData.length) {
+      console.error('All questions must be answered');
+      alert('Please answer all questions before submitting.');
       return;
     }
 
-    console.log('Submitting MBTI:', { email: userData.email, mbtiType });
+    const result = calculateMBTI(answers);
+    console.log('MBTI Result:', result);
 
-    try {
-      const updatedUserData = { 
-        email: userData.email, 
-        mbtiType 
-      };
-
-      const response = await axios.post('http://192.168.1.24:5003/updateUserData', updatedUserData);
-
-      if (response.data.status === 'ok') {
-        console.log('User updated successfully:', response.data);
-        // Navigate to next screen (if needed)
-      } else {
-        console.error('Backend Error:', response.data);
-      }
-    } catch (error) {
-      console.error('Error updating MBTI:', error.response?.data || error.message);
-    }
+    router.push({
+      pathname: '/results',
+      params: { mbti: result },
+    });
   };
 
   return (
@@ -127,7 +110,8 @@ const QuestionsScreen = () => {
         Question {currentQuestion + 1} of {questionsData.length}
       </Text>
 
-      {currentQuestion === questionsData.length - 1 && (
+      {/* Display the Finish button only when the last question is answered */}
+      {currentQuestion === questionsData.length - 1 && answers.length === questionsData.length && (
         <TouchableOpacity style={styles.submitButton} onPress={handleTestSubmit}>
           <Text style={styles.submitButtonText}>Finish</Text>
         </TouchableOpacity>

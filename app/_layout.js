@@ -18,6 +18,7 @@ const RootLayout = () => {
             <Stack.Screen name="startscreen"/>
             <Stack.Screen name="questions"/>
             <Stack.Screen name="results"/>
+            <Stack.Screen name="dashboard"/>
           </Stack>
         </SafeAreaProvider>
       </PaperProvider>
