@@ -1,61 +1,63 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import axios from 'axios'; // Import axios to make the POST request
+import { useRoute } from '@react-navigation/native';  // Correct hook for accessing route params
+import axios from 'axios';
 import styles from '../styles/styles';
 
-// Questions for MBTI quiz
 const questionsData = [
   { id: 1, text: "You enjoy social gatherings." },
   { id: 2, text: "You often get excited by new ideas." },
-  { id: 3, text: "You focus on the present rather than future possibilities." },
-  { id: 4, text: "You prefer details over abstract concepts." },
-  { id: 5, text: "You tend to make decisions based on logic and reason." },
-  { id: 6, text: "You value harmony and avoid conflict." },
-  { id: 7, text: "You like to plan things ahead of time." },
-  { id: 8, text: "You prefer to stay flexible and spontaneous." },
-  { id: 9, text: "You feel energized after interacting with people." },
-  { id: 10, text: "You prefer facts over theories." },
-  { id: 11, text: "You trust your intuition more than sensory details." },
-  { id: 12, text: "You tend to think out loud." },
-  { id: 13, text: "You enjoy analyzing problems logically." },
-  { id: 14, text: "You consider people's feelings before making decisions." },
-  { id: 15, text: "You stick to schedules and deadlines." },
-  { id: 16, text: "You like having multiple options open." },
-  { id: 17, text: "You prefer working in teams." },
-  { id: 18, text: "You find abstract concepts exciting." },
-  { id: 19, text: "You prefer structured routines." },
-  { id: 20, text: "You like surprises and adapt easily to change." },
+  { id: 3, text: "You prefer working in groups rather than alone." },
+  { id: 4, text: "You often feel energized by social interactions." },
+  { id: 5, text: "You prefer to focus on the present rather than the future." },
+  { id: 6, text: "You enjoy trying new things and taking risks." },
+  { id: 7, text: "You tend to be more practical than imaginative." },
+  { id: 8, text: "You often find yourself thinking about the future." },
+  { id: 9, text: "You prefer to make decisions based on logic rather than feelings." },
+  { id: 10, text: "You often find yourself analyzing situations objectively." },
+  { id: 11, text: "You enjoy spending time with others more than being by yourself." },
+  { id: 12, text: "You prefer a well-structured and organized environment." },
+  { id: 13, text: "You are more comfortable with flexibility than with rules." },
+  { id: 14, text: "You tend to be more spontaneous rather than planning ahead." },
+  { id: 15, text: "You find it easy to make decisions based on logic and facts." },
+  { id: 16, text: "You are more inclined to follow rules and traditions." },
+  { id: 17, text: "You value social harmony and avoid conflict." },
+  { id: 18, text: "You prefer to stay in your comfort zone rather than try new things." },
+  { id: 19, text: "You are more focused on the details than the big picture." },
+  { id: 20, text: "You tend to be more reserved in expressing your emotions." }
 ];
 
 const QuestionsScreen = () => {
+  const route = useRoute();  // Access route params using useRoute
+  const { userData } = route.params || {};  // Extract userData from route params
+
+  // Check if userData exists
+  if (!userData) {
+    return <Text>Failed to load user data.</Text>;
+  }
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [mbtiType, setMbtiType] = useState('');
-  const router = useRouter();
 
-  // Handle answer selection
   const handleAnswer = (score) => {
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestion] = score;
     setAnswers(updatedAnswers);
 
     if (currentQuestion === questionsData.length - 1) {
-      // Finish quiz and calculate MBTI
       const mbtiType = calculateMBTI(updatedAnswers);
       setMbtiType(mbtiType);
     } else {
-      // Move to next question
       setCurrentQuestion(currentQuestion + 1);
     }
   };
 
-  // MBTI Calculation Logic
   const calculateMBTI = (answers) => {
-    const E = answers.slice(0, 5).reduce((a, b) => a + b, 0); // Extroversion vs Introversion
-    const S = answers.slice(5, 10).reduce((a, b) => a + b, 0); // Sensing vs Intuition
-    const T = answers.slice(10, 15).reduce((a, b) => a + b, 0); // Thinking vs Feeling
-    const J = answers.slice(15, 20).reduce((a, b) => a + b, 0); // Judging vs Perceiving
+    const E = answers.slice(0, 5).reduce((a, b) => a + b, 0);
+    const S = answers.slice(5, 10).reduce((a, b) => a + b, 0);
+    const T = answers.slice(10, 15).reduce((a, b) => a + b, 0);
+    const J = answers.slice(15, 20).reduce((a, b) => a + b, 0);
 
     const extroverted = E > 15 ? "E" : "I";
     const sensing = S > 15 ? "S" : "N";
@@ -65,17 +67,30 @@ const QuestionsScreen = () => {
     return extroverted + sensing + thinking + judging;
   };
 
-  // Handle the submission of MBTI result to the server
   const handleTestSubmit = async () => {
+    if (!userData || !userData.email) {
+      console.error('User data or email is not available');
+      return;
+    }
+
+    console.log('Submitting MBTI:', { email: userData.email, mbtiType });
+
     try {
-      const response = await axios.post('http://localhost:5001/update-mbti', { mbtiType });
+      const updatedUserData = { 
+        email: userData.email, 
+        mbtiType 
+      };
+
+      const response = await axios.post('http://192.168.1.24:5003/updateUserData', updatedUserData);
+
       if (response.data.status === 'ok') {
-        router.push('/interest-selection');
+        console.log('User updated successfully:', response.data);
+        // Navigate to next screen (if needed)
       } else {
-        console.error(response.data);
+        console.error('Backend Error:', response.data);
       }
     } catch (error) {
-      console.error("Error updating MBTI:", error);
+      console.error('Error updating MBTI:', error.response?.data || error.message);
     }
   };
 
@@ -88,21 +103,21 @@ const QuestionsScreen = () => {
       <View style={styles.questionbuttonContainer}>
         <TouchableOpacity
           style={styles.answerButton}
-          onPress={() => handleAnswer(5)} // Agree
+          onPress={() => handleAnswer(5)}
         >
           <Text style={styles.answerText}>Agree</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.answerButton}
-          onPress={() => handleAnswer(3)} // Neutral
+          onPress={() => handleAnswer(3)}
         >
           <Text style={styles.answerText}>Neutral</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.answerButton}
-          onPress={() => handleAnswer(1)} // Disagree
+          onPress={() => handleAnswer(1)}
         >
           <Text style={styles.answerText}>Disagree</Text>
         </TouchableOpacity>
@@ -112,10 +127,9 @@ const QuestionsScreen = () => {
         Question {currentQuestion + 1} of {questionsData.length}
       </Text>
 
-      {/* Once the quiz is completed, show the submit button */}
-      {currentQuestion === questionsData.length && (
+      {currentQuestion === questionsData.length - 1 && (
         <TouchableOpacity style={styles.submitButton} onPress={handleTestSubmit}>
-          <Text style={styles.submitButtonText}>Submit MBTI</Text>
+          <Text style={styles.submitButtonText}>Finish</Text>
         </TouchableOpacity>
       )}
     </View>

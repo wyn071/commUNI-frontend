@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import axios from 'axios'; // Import axios
 import styles from '../styles/styles'; // Import styles
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -26,6 +20,15 @@ const Register = () => {
   const [department, setDepartment] = useState('');
   const router = useRouter(); // Initialize router
 
+  // Validation states for each field
+  const [firstNameVerify, setFirstNameVerify] = useState(true);
+  const [lastNameVerify, setLastNameVerify] = useState(true);
+  const [emailVerify, setEmailVerify] = useState(true);
+  const [passwordVerify, setPasswordVerify] = useState(true);
+  const [birthdayVerify, setBirthdayVerify] = useState(true);
+  const [idNumberVerify, setIdNumberVerify] = useState(true);
+  const [programVerify, setProgramVerify] = useState(true);
+
   // Function to capitalize the first letter
   const capitalizeFirstLetter = (text) => {
     return text.replace(/^\w/, (c) => c.toUpperCase());
@@ -44,59 +47,60 @@ const Register = () => {
   };
 
   // Handle registration
-  const handleRegister = async () => {
-    // Log to check if function is being triggered
-    console.log('Register button pressed');
+  const handleRegister = () => {
+    const birthday = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   
-    // Validate required fields
-    if (!email || !password || !idNumber || !firstName || !lastName || !month || !day || !year || birthday === "--") {
-      alert("All fields are required and birthday must be valid.");
-      return;
-    }
+    // Validate mandatory fields
+    setFirstNameVerify(firstName !== '');
+    setLastNameVerify(lastName !== '');
+    setEmailVerify(email !== '');
+    setPasswordVerify(password !== '');
+    setBirthdayVerify(birthday !== '--' && month !== '' && day !== '' && year !== '');
+    setIdNumberVerify(idNumber !== '');
+    setProgramVerify(program !== '');
   
-    // Construct the birthday string
-    const birthday = `${month}-${day}-${year}`;
-    
-    console.log('Birthday:', birthday); // Log to check the birthday format
-  
-    // Validate user type (activeTab)
-    if (!['Student', 'Faculty'].includes(activeTab)) {
-      alert('Invalid user type');
-      return;
-    }
-  
+    // Log the data being sent to the server
     const userData = {
       firstName,
       lastName,
       email,
       password,
       idNumber,
+      program,
       birthday,
-      activeTab,
-      program: activeTab === 'Student' ? program : undefined, // Send undefined if not applicable
-      department: activeTab === 'Faculty' ? department : undefined, // Send undefined if not applicable
     };
   
-    console.log('Sending data to backend:', userData);
+    console.log('Sending data:', userData); // Log the data
   
-    if (!termsAccepted) {
-      alert('You must accept the terms and privacy policy');
-      return;
-    }
-  
-    try {
-      const response = await axios.post('http://192.168.1.24:5001/register', userData);
-      console.log('Response:', response.data); // Log response data
-      if (response.data.status === 'ok') {
-        router.push('/personality-test'); // Navigate to personality test page
-      } else {
-        alert('Registration failed: ' + response.data.data);
-      }
-    } catch (error) {
-      console.error("Error during registration:", error); // Log error details
-      alert('Error during registration');
+    // Check if all required fields are filled
+    if (firstName && lastName && email && password && birthday && idNumber && program) {
+      axios
+        .post('http://192.168.1.24:5003/register', userData)
+        .then((res) => {
+          console.log(res.data);
+          // Pass the userData to the next screen (StartScreen)
+          router.push({
+            pathname: 'startscreen',
+            params: { userData: JSON.stringify(userData) }, // Pass as string
+          });
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log('Response error:', error.response.data);
+            Alert.alert('Error', `Server Error: ${error.response.data}`);
+          } else if (error.request) {
+            console.log('Request error:', error.request);
+            Alert.alert('Error', 'No response from server');
+          } else {
+            console.log('Error', error.message);
+            Alert.alert('Error', `Error: ${error.message}`);
+          }
+        });
+    } else {
+      Alert.alert('Please fill in all mandatory fields');
     }
   };
+  
 
   // Render form
   const renderForm = () => {
@@ -262,35 +266,19 @@ const Register = () => {
       {/* Tab Switcher */}
       <View style={styles.registerTabContainer}>
         <TouchableOpacity
-          style={[
-            styles.registertabButton,
-            activeTab === 'Student' && styles.registeractiveTabButton,
-          ]}
+          style={[styles.registertabButton, activeTab === 'Student' && styles.registeractiveTabButton]}
           onPress={() => setActiveTab('Student')}
         >
-          <Text
-            style={[
-              styles.registertabText,
-              activeTab === 'Student' && styles.registeractiveTabText,
-            ]}
-          >
+          <Text style={[styles.registertabText, activeTab === 'Student' && styles.registeractiveTabText]}>
             Student
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.registertabButton,
-            activeTab === 'Faculty' && styles.registeractiveTabButton,
-          ]}
+          style={[styles.registertabButton, activeTab === 'Faculty' && styles.registeractiveTabButton]}
           onPress={() => setActiveTab('Faculty')}
         >
-          <Text
-            style={[
-              styles.registertabText,
-              activeTab === 'Faculty' && styles.registeractiveTabText,
-            ]}
-          >
+          <Text style={[styles.registertabText, activeTab === 'Faculty' && styles.registeractiveTabText]}>
             Faculty
           </Text>
         </TouchableOpacity>

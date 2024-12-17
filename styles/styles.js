@@ -379,6 +379,88 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
       },
+      submitButton: {
+        backgroundColor: '#007bff',  // Default background color
+        padding: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20,
+        width: '80%',
+      },
+      submitButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+        
+      },
+      swipeContainer: {
+        flex: 1,
+        backgroundColor: "white",
+      },
+      swipeCard: {
+        flex: 0.75,
+        borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f8f8f8",
+        marginTop: 50,
+      },
+      swipeImage: {
+        width: "100%",
+        height: "70%",
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+      },
+      swipeTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginVertical: 10,
+      },
+      swipeTagsContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "center",
+      },
+      swipeTag: {
+        backgroundColor: "#ddd",
+        borderRadius: 15,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        margin: 5,
+      },
+      swipeTagText: {
+        fontSize: 12,
+        color: "#333",
+      },
+      swipeButtonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        marginVertical: 20,
+      },
+      swipePassButton: {
+        padding: 10,
+      },
+      swipeLikeButton: {
+        padding: 10,
+      },
+      swipeBottomTabContainer: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        backgroundColor: "white",
+        borderTopWidth: 1,
+        borderTopColor: "#ddd",
+        paddingVertical: 10,
+      },
+      swipeTab: {
+        alignItems: "center",
+      },
     });
 
 export default styles;

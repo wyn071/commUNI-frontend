@@ -1,13 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import { Link } from 'expo-router'; // Use Link for navigation
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { Link, useNavigation } from 'expo-router'; // Use Link for navigation
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from '../styles/styles'; // Import your styles
+import axios from 'axios';
 
 const Login = () => {
-  const [emailOrId, setEmailOrId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigation = useNavigation();
+
+  const handleLogin = () => {
+    console.log('Email:', email);
+    console.log('Password:', password);
+
+    const userData = {
+      email: email,
+      password: password,
+    };
+
+    axios
+      .post('http://192.168.1.24:5003/login-user', userData)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.status === 'ok') {
+          Alert.alert('Success', 'Logged in successfully!');
+          navigation.navigate('dashboard'); // Redirect to Dashboard screen
+        } else {
+          Alert.alert('Error', 'Invalid email or password');
+        }
+      })
+      .catch((err) => {
+        console.error('Login Error:', err);
+        Alert.alert('Error', 'Something went wrong. Please try again.');
+      });
+  };
 
   return (
     <View style={styles.loginScreenContainer}>
@@ -22,12 +50,18 @@ const Login = () => {
         <Text style={styles.loginLabel}>Email or ID number</Text>
         <View style={styles.loginInputRow}>
           <TextInput
-            placeholder="Enter email or ID"
-            value={emailOrId}
-            onChangeText={setEmailOrId}
+            placeholder="Enter email"
+            value={email}
+            onChangeText={setEmail}
             style={styles.loginInput}
+            keyboardType="email-address" // Ensures correct keyboard type
+            autoCapitalize="none" // Prevents auto-capitalization for email
           />
-          <MaterialCommunityIcons name="check-circle" size={20} color="#ccc" />
+          {email ? (
+            <MaterialCommunityIcons name="check-circle" size={20} color="green" />
+          ) : (
+            <MaterialCommunityIcons name="check-circle" size={20} color="#ccc" />
+          )}
         </View>
       </View>
 
@@ -58,16 +92,22 @@ const Login = () => {
       </TouchableOpacity>
 
       {/* Log In Button */}
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
 
       {/* Or Login With */}
       <Text style={styles.loginOrText}>Or login with</Text>
       <View style={styles.loginSocialContainer}>
-        <MaterialCommunityIcons name="facebook" size={32} color="#4267B2" />
-        <MaterialCommunityIcons name="google" size={32} color="#DB4437" />
-        <MaterialCommunityIcons name="apple" size={32} color="#000" />
+        <TouchableOpacity>
+          <MaterialCommunityIcons name="facebook" size={32} color="#4267B2" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <MaterialCommunityIcons name="google" size={32} color="#DB4437" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <MaterialCommunityIcons name="apple" size={32} color="#000" />
+        </TouchableOpacity>
       </View>
 
       {/* Register Redirect */}

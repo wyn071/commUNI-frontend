@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios'; // Import axios to make the POST request
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/styles'; // Import styles
+
 
 const interestList = [
   '‘90s kid', 'Harry Potter', 'SoundCloud', 'Spa', 'Self-care', 'Heavy metal',
@@ -20,36 +20,7 @@ const interestList = [
 ];
 
 const Interests = () => {
-  const [selectedInterests, setSelectedInterests] = useState([]);
   const navigation = useNavigation();
-
-  // Handle the selection/deselection of interests
-  const handleInterestChange = (interest) => {
-    if (selectedInterests.includes(interest)) {
-      setSelectedInterests(selectedInterests.filter((item) => item !== interest));
-    } else {
-      if (selectedInterests.length < 6) {
-        setSelectedInterests([...selectedInterests, interest]);
-      } else {
-        // Limit to 6 interests
-        Alert.alert("Limit reached", "You can only select up to 6 interests.");
-      }
-    }
-  };
-
-  // Submit the selected interests to the backend
-  const handleSubmitInterests = async () => {
-    try {
-      const response = await axios.post('http://192.168.1.24:5001/update-interests', { interests: selectedInterests });
-      if (response.data.status === 'ok') {
-        navigation.navigate('Home'); // Navigate to the Home screen if successful
-      } else {
-        console.error(response.data);
-      }
-    } catch (error) {
-      console.error("Error updating interests:", error);
-    }
-  };
 
   return (
     <View style={styles.interestContainer}>
@@ -72,28 +43,17 @@ const Interests = () => {
       {/* Scrollable Interests */}
       <ScrollView contentContainerStyle={styles.interestScroll}>
         {interestList.map((interest, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.interestButton,
-              selectedInterests.includes(interest) && styles.selectedInterestButton
-            ]}
-            onPress={() => handleInterestChange(interest)}
-          >
+          <TouchableOpacity key={index} style={styles.interestButton}>
             <Text style={styles.interestButtonText}>{interest}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Submit Button */}
-      <TouchableOpacity
-        style={styles.interestContinueButton}
-        onPress={handleSubmitInterests}
-      >
+      {/* Continue Button */}
+      <TouchableOpacity style={styles.interestContinueButton}>
         <Text style={styles.interestContinueButtonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
 export default Interests;

@@ -1,10 +1,22 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from 'expo-router';
-import styles from '../styles/styles';
+import { useRouter } from 'expo-router';  // Correct router
+import { useRoute } from '@react-navigation/native';  // Correct hook for accessing route params
+import styles from '../styles/styles';  // Import your custom styles
 
 const StartScreen = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
+  const route = useRoute();  // Access the current route
+  const { userData } = route.params || {};  // Extract userData from route params
+
+  // Check if userData exists
+  if (!userData) {
+    return (
+      <View style={styles.testContainer}>
+        <Text>Failed to load user data.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.testContainer}>
@@ -17,9 +29,15 @@ const StartScreen = () => {
 
       <TouchableOpacity
         style={styles.testButtonPrimary}
-        onPress={() => navigation.navigate('questions')}
+        onPress={() => {
+          // Pass userData to the next screen (QuestionsScreen)
+          router.push({
+            pathname: 'questions',  // The path to the questions screen
+            params: { userData },  // Pass userData as params
+          });
+        }}
       >
-        <Text style={styles.testButtonText}>Take the test</Text>
+        <Text style={styles.testButtonText}>Take the Test</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
