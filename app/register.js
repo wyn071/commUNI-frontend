@@ -69,7 +69,7 @@ const Register = () => {
     if (firstName && lastName && email && password && birthdayFormatted && idNumber && program) {
       setLoading(true); // Start loading animation
       axios
-        .post('http://192.168.1.20:5003/register', userData)
+        .post('http://192.168.198.236:5003/register', userData)
         .then((res) => {
           console.log(res.data);
           // Pass the userData to the next screen (StartScreen)

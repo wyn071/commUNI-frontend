@@ -23,7 +23,7 @@ const Login = () => {
     };
 
     axios
-      .post('http://192.168.1.20:5003/login-user', userData)
+      .post('http://192.168.198.236:5003/login-user', userData)
       .then((res) => {
         setLoading(false); // Stop loading animation
         console.log(res.data);
