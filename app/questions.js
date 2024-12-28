@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 import styles from '../styles/styles';
 
 const questionsData = [
@@ -32,7 +33,9 @@ const QuestionsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const router = useRouter();
-  const { userData } = route.params || {};
+  // const { userData } = route.params || {};
+  const { userData } = route.params || {};  // Extract userData from route params
+  const parsedUserData = userData ? JSON.parse(userData) : {};  // Parse userData back to an object
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -61,20 +64,95 @@ const QuestionsScreen = () => {
     return extroverted + sensing + thinking + judging;
   };
 
-  const handleTestSubmit = () => {
+  // const handleTestSubmit = () => {
+  //   if (answers.length < questionsData.length) {
+  //     console.error('All questions must be answered');
+  //     alert('Please answer all questions before submitting.');
+  //     return;
+  //   }
+
+  //   const result = calculateMBTI(answers);
+  //   console.log('MBTI Result:', result);
+
+  //   router.push({
+  //     pathname: '/results',
+  //     params: { mbti: result },
+  //   });
+  // };
+  // const handleTestSubmit = async () => {
+  //   if (answers.length < questionsData.length) {
+  //     console.error('All questions must be answered');
+  //     alert('Please answer all questions before submitting.');
+  //     return;
+  //   }
+
+  //   const result = calculateMBTI(answers);  // Calculate the MBTI result
+  //   console.log('MBTI Result:', result);
+
+  //   try {
+  //     // Send the MBTI result to the backend to save it
+  //     console.log('Sending MBTI result:', {
+  //       email: userData.email,
+  //       mbtiResult: result
+  //     }); const response = await axios.post('http://192.168.1.53:5003/save-mbti', {
+  //       email: userData.email,  // Send the user's email
+  //       mbtiResult: result,     // Send the calculated MBTI result
+  //     });
+
+  //     if (response.data.status === 'ok') {
+  //       // Navigate to the results screen with the MBTI result
+  //       router.push({
+  //         pathname: '/results',
+  //         params: { mbti: result },
+  //       });
+  //     } else {
+  //       alert('Error saving MBTI result');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error saving MBTI result:', error);
+  //     alert('Failed to save MBTI result');
+  //   }
+  // };
+
+  const handleTestSubmit = async () => {
     if (answers.length < questionsData.length) {
       console.error('All questions must be answered');
       alert('Please answer all questions before submitting.');
+      router.push({
+        pathname: 'interests',
+        params: { userData },  // Make sure you're passing the userData object, not just the string
+      })
       return;
     }
 
-    const result = calculateMBTI(answers);
+    const result = calculateMBTI(answers);  // Calculate the MBTI result
     console.log('MBTI Result:', result);
 
-    router.push({
-      pathname: '/results',
-      params: { mbti: result },
-    });
+    try {
+      // Send the MBTI result to the backend to save it
+      console.log('Sending MBTI result:', {
+        email: parsedUserData.email,  // Use parsedUserData.email here
+        mbtiResult: result
+      });
+
+      const response = await axios.post('http://192.168.1.53:5003/save-mbti', {
+        email: parsedUserData.email,  // Send the user's email
+        mbtiResult: result,           // Send the calculated MBTI result
+      });
+
+      if (response.data.status === 'ok') {
+        // Navigate to the results screen with the MBTI result
+        router.push({
+          pathname: '/interests',
+          params: { mbti: result, userData },
+        });
+      } else {
+        alert('Error saving MBTI result');
+      }
+    } catch (error) {
+      console.error('Error saving MBTI result:', error);
+      alert('Failed to save MBTI result');
+    }
   };
 
   return (

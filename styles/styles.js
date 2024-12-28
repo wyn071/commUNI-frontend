@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: '#666',
-    marginBottom: 30,
+    marginBottom: 50,
   },
   buttonContainer: {
     width: '100%',
@@ -411,34 +411,34 @@ const styles = StyleSheet.create({
     paddingTop: 20, // Add padding to the top
     width: '90%',
   },
-  cardImageBackground: { 
-    flex: 1, 
-    justifyContent: "flex-end" 
+  cardImageBackground: {
+    flex: 1,
+    justifyContent: "flex-end"
   },
   cardOverlay: {
     padding: 20,
     backgroundColor: "rgba(0,0,0,0.4)",
   },
-  cardTitle: { 
-    color: "white", 
-    fontSize: 22, 
-    fontWeight: "bold" 
+  cardTitle: {
+    color: "white",
+    fontSize: 22,
+    fontWeight: "bold"
   },
-  cardTags: { 
-    flexDirection: "row", 
-    marginTop: 5 
+  cardTags: {
+    flexDirection: "row",
+    marginTop: 5
   },
-  cardTag: { 
-    color: "#ddd", 
-    marginRight: 10 
+  cardTag: {
+    color: "#ddd",
+    marginRight: 10
   },
-  loader: { 
-    marginTop: 10 
+  loader: {
+    marginTop: 10
   },
-  cardButtons: { 
-    flexDirection: "row", 
-    justifyContent: "space-around", 
-    marginTop: 20 
+  cardButtons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 20
   },
 
   // Home screen container (with posts)
@@ -535,19 +535,19 @@ const styles = StyleSheet.create({
   },
 
   // Chat, Notifications, and Profile screens can use a similar approach.
-  dashboardScreen: { 
-    flex: 1, 
+  dashboardScreen: {
+    flex: 1,
     paddingTop: 20,  // Padding added here for consistency
-    justifyContent: "center", 
-    alignItems: "center" 
+    justifyContent: "center",
+    alignItems: "center"
   },
 
   // Styling for the "No more communities" message
-  noMoreText: { 
-    textAlign: "center", 
-    fontSize: 18, 
-    color: "#888", 
-    marginTop: 20 
+  noMoreText: {
+    textAlign: "center",
+    fontSize: 18,
+    color: "#888",
+    marginTop: 20
   },
   loadingOverlay: {
     position: 'absolute',
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50', // Highlight color for selected interests
     borderColor: '#4CAF50',
   },
-  
+
   selectedInterestText: {
     color: '#FFFFFF', // Text color for selected interests
   },

@@ -1,9 +1,35 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router'; // Import router for navigation
+import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
+import { useState, useEffect } from 'react';
+
 
 export default function App() {
   const router = useRouter(); // Initialize the router
+  const route = useRoute();  // Access the route object
+  const { userData, selectedInterests } = route.params || {};  // Extract userData and selectedInterests from route.params
+  const parsedUserData = userData ? JSON.parse(userData) : {};  // Parse userData back to an object
+
+  console.log("nanako sa Profile Screen");
+  // console.log(userData); // Log to see if userData is passed correctly
+  // console.log(selectedInterests); // Log to see if selectedInterests is passed correctly
+  // console.log(Array.isArray(selectedInterests), selectedInterests);  // Check if it's an array
+
+  const [interestsArray, setInterestsArray] = useState([]);
+  const firstName = parsedUserData.firstName;
+  const lastName = parsedUserData.lastName;
+  const fullName = `${firstName} ${lastName}`;
+
+
+  useEffect(() => {
+    // Check if selectedInterests is a string and convert it to an array
+    if (typeof selectedInterests === 'string') {
+      setInterestsArray(selectedInterests.split(','));
+    } else {
+      setInterestsArray(selectedInterests || []);
+    }
+  }, [selectedInterests]); // Only rerun when selectedInterests changes
 
   const handleLogout = () => {
     // Logic for logging out can go here, such as clearing tokens or state
@@ -27,7 +53,7 @@ export default function App() {
           source={{ uri: 'https://picsum.photos/seed/profile/100' }}
           style={styles.profileImage}
         />
-        <Text style={styles.name}>Natalie Patt</Text>
+        <Text style={styles.name}>{fullName}</Text>
         <Text style={styles.bio}>
           Bachelor of Science of Information Technology{"\n"}CITC Department{"\n"}Junior
         </Text>
@@ -45,22 +71,11 @@ export default function App() {
           </View>
         </View>
 
-        {/* Tags */}
+        {/* Interests */}
         <View style={styles.tagsContainer}>
-          {[
-            'Poetry',
-            'Photography',
-            'Basketball',
-            'Fiction',
-            'Computer Programming',
-            'Hip hop',
-            'Harry Potter',
-            'Web Development',
-            'Machine Learning',
-            'Volunteering',
-          ].map((tag, index) => (
+          {interestsArray.map((interest, index) => (
             <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
+              <Text style={styles.tagText}>{interest}</Text>
             </View>
           ))}
         </View>
@@ -97,7 +112,7 @@ export default function App() {
             />
             <View>
               <Text style={styles.postTitle}>Tech Innovators Guild</Text>
-              <Text style={styles.postSubtitle}>Natalie Patt · Junior · BSIT · 2 weeks ago</Text>
+              <Text style={styles.postSubtitle}>{fullName} · Junior · BSIT · 2 weeks ago</Text>
             </View>
           </View>
           <Text style={styles.postContent}>

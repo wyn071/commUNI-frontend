@@ -140,10 +140,24 @@ const HomeScreen = () => {
     setSelectedImage(null);
   };
 
+  // const handleLike = (id) => {
+  //   setPosts((prev) =>
+  //     prev.map((post) =>
+  //       post.id === id ? { ...post, likes: post.likes + 1 } : post
+  //     )
+  //   );
+  // };
+
   const handleLike = (id) => {
     setPosts((prev) =>
       prev.map((post) =>
-        post.id === id ? { ...post, likes: post.likes + 1 } : post
+        post.id === id
+          ? {
+            ...post,
+            likedByUser: !post.likedByUser,
+            likes: post.likedByUser ? post.likes - 1 : post.likes + 1,
+          }
+          : post
       )
     );
   };
@@ -174,7 +188,6 @@ const HomeScreen = () => {
         <Image source={{ uri: selectedImage }} style={styles.previewImage} />
       )}
 
-      {/* Posts List */}
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -196,13 +209,18 @@ const HomeScreen = () => {
             )}
             <View style={styles.postActions}>
               <TouchableOpacity onPress={() => handleLike(item.id)}>
-                <Ionicons name="heart" size={20} color="red" />
+                <Ionicons
+                  name={item.likedByUser ? "heart" : "heart-outline"}
+                  size={20}
+                  color="red"
+                />
                 <Text>{item.likes} Likes</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
       />
+
     </View>
   );
 };

@@ -13,7 +13,7 @@ const Login = () => {
   const navigation = useNavigation();
 
   const handleLogin = () => {
-    setLoading(true); // Start loading animation
+    setLoading(true);
     console.log('Email:', email);
     console.log('Password:', password);
 
@@ -23,23 +23,31 @@ const Login = () => {
     };
 
     axios
-      .post('http://192.168.198.236:5003/login-user', userData)
+      .post('http://192.168.1.53:5003/login-user', userData)
       .then((res) => {
-        setLoading(false); // Stop loading animation
+        setLoading(false);
         console.log(res.data);
         if (res.data.status === 'ok') {
+          const { userData, selectedInterests } = res.data;
+
+          console.log("Log In button clicked! Here is the user data: ", userData, "and selected interests: ", selectedInterests);
+
           Alert.alert('Success', 'Logged in successfully!');
-          navigation.navigate('dashboard'); // Redirect to Dashboard screen
+          navigation.navigate('dashboard', {
+            userData: JSON.stringify(userData),
+            selectedInterests: selectedInterests,
+          });
         } else {
           Alert.alert('Error', 'Invalid email or password');
         }
       })
       .catch((err) => {
-        setLoading(false); // Stop loading animation
+        setLoading(false);
         console.error('Login Error:', err);
         Alert.alert('Error', 'Something went wrong. Please try again.');
       });
   };
+
 
   return (
     <View

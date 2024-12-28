@@ -1,8 +1,26 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
+import { useRouter } from 'expo-router'; // Import router for navigation
+import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
+import { TouchableOpacity } from 'react-native';
 
 const DashboardLayout = () => {
+  console.log("We're in the Dashboard");
+  const router = useRouter(); // Initialize the router
+  const route = useRoute();  // Access the route object
+  const { userData, selectedInterests } = route.params || {};  // Extract userData and selectedInterests from route.params
+
+  const navToProfile = () => {
+    console.log("navToProfile function called");
+    // console.log("UserData tehee: ", userData);
+    // console.log("Your selected interests. These will show up on your profile!: ", selectedInterests);
+    router.push({
+      pathname: '/dashboard/profilescreen',
+      params: { userData, selectedInterests },
+    });
+  };
+
   return (
     <Tabs
       screenOptions={{
@@ -43,6 +61,12 @@ const DashboardLayout = () => {
           title: 'Profile',
           tabBarIcon: () => (
             <MaterialCommunityIcons name="account" size={24} color="black" />
+          ),
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}  // Spread default tabBarButton props
+              onPress={navToProfile}  // Custom onPress function
+            />
           ),
         }}
       />

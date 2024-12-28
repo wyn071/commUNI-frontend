@@ -39,19 +39,36 @@ const Register = () => {
     return text.replace(/^\w/, (c) => c.toUpperCase());
   };
 
-  // Handle registration
+
   const handleRegister = () => {
     const birthdayFormatted = `${birthday.getFullYear()}-${(birthday.getMonth() + 1).toString().padStart(2, '0')}-${birthday.getDate().toString().padStart(2, '0')}`;
-  
+
     // Validate mandatory fields
     setFirstNameVerify(firstName !== '');
     setLastNameVerify(lastName !== '');
     setEmailVerify(email !== '');
-    setPasswordVerify(password !== '');
+    setPasswordVerify(password.length >= 6);  // Check if password is at least 6 characters
     setBirthdayVerify(birthdayFormatted !== '--' && birthday !== '');
     setIdNumberVerify(idNumber !== '');
     setProgramVerify(program !== '');
-  
+
+    // Check if password is at least 6 characters
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;  // Stop the registration process if password is too short
+    }
+
+    // Check if the user is 18 or older before proceeding with registration
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const month = today.getMonth() - birthDate.getMonth();
+
+    if (age < 18 || (age === 18 && month < 0)) {
+      Alert.alert('Error', 'You must be at least 18 years old to register.');
+      return;  // Stop the registration process if the user is under 18
+    }
+
     // Log the data being sent to the server
     const userData = {
       firstName,
@@ -62,14 +79,14 @@ const Register = () => {
       program,
       birthday: birthdayFormatted,
     };
-  
+
     console.log('Sending data:', userData); // Log the data
-  
+
     // Check if all required fields are filled
     if (firstName && lastName && email && password && birthdayFormatted && idNumber && program) {
       setLoading(true); // Start loading animation
       axios
-        .post('http://192.168.198.236:5003/register', userData)
+        .post('http://192.168.1.53:5003/register', userData)
         .then((res) => {
           console.log(res.data);
           // Pass the userData to the next screen (StartScreen)
@@ -96,17 +113,27 @@ const Register = () => {
     }
   };
 
-  // Show Date Picker handler
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
-    if (selectedDate && selectedDate <= maxDate) {
-      setBirthday(selectedDate); // Set birthday only if the date is within the allowed range
-    } else {
-      Alert.alert('Error', 'Please select a date before 2024');
+
+    if (selectedDate) {
+      // Calculate age
+      const today = new Date();
+      const birthDate = new Date(selectedDate);
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const month = today.getMonth() - birthDate.getMonth();
+
+      // Check if the user is 18 or older
+      if (age < 18 || (age === 18 && month < 0)) {
+        Alert.alert('Error', 'You must be at least 18 years old to register.');
+        setBirthday(new Date());
+        return;  // Do not set the birthday if the user is under 18
+      } else {
+        setBirthday(selectedDate);  // Set the valid birthday if age is 18 or older
+      }
     }
   };
 
-  // Render form
   const renderForm = () => {
     return (
       <ScrollView style={styles.registerScreenContainer}>
@@ -229,13 +256,13 @@ const Register = () => {
             <Text style={styles.registerbuttonText}>Create account</Text>
           </TouchableOpacity>
 
-          <Text style={styles.orRegisterWithText}>Or register with</Text>
+          {/* <Text style={styles.orRegisterWithText}>Or register with</Text>
 
           <View style={styles.registersocialContainer}>
             <MaterialCommunityIcons name="facebook" size={32} />
             <MaterialCommunityIcons name="google" size={32} />
             <MaterialCommunityIcons name="apple" size={32} />
-          </View>
+          </View> */}
 
           <Text style={styles.registerfooterText}>
             Already have an account?{' '}
