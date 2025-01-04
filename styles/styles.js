@@ -1,6 +1,24 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -65 }, { translateY: -25 }],
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 15,
+    borderRadius: 8,
+    zIndex: 1000, // Ensures the overlay is above other content
+    alignItems: 'center', // Centers the text horizontally
+    justifyContent: 'center', // Centers the text vertically
+  },
+  overlayText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   gradientContainer: {
     flex: 1,
     justifyContent: 'center',

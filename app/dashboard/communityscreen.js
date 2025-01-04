@@ -1,6 +1,6 @@
 // CommunityScreen.js
 import React, { useState } from "react";
-import { View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated } from "react-native";
+import { View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../../styles/styles"; // Adjust this path as needed
 import images from "../../assets/images"; // Import the images object
@@ -27,13 +27,23 @@ const communityData = [
   // { id: 15, name: "AI Pioneers", tags: ["Artificial Intelligence", "Machine Learning"], logo: images.aipioneers },
 ];
 
-
 const CommunityScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const cardPosition = new Animated.Value(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isRequestSent, setIsRequestSent] = useState(false);
 
   const handleLike = () => {
+    // setIsRequestSent(true);
+
+    // setTimeout(() => {
+    //   setIsRequestSent(false);
+    // }, 2000);
+    // Alert.alert("Request Sent");
+    // Show custom modal
+    setIsModalVisible(true);
+
     animateCard(true);
   };
 
@@ -93,8 +103,58 @@ const CommunityScreen = () => {
       ) : (
         <Text style={styles.noMoreText}>No more communities!</Text>
       )}
+
+
+      <Modal
+        visible={isModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={modalStyles.modalOverlay}>
+          <View style={modalStyles.modalContainer}>
+            <Text style={modalStyles.modalText}>Request Sent</Text>
+            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={modalStyles.modalButton}>
+              <Text style={modalStyles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const modalStyles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: 250,
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#4caf50",
+  },
+  modalButton: {
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#4caf50",
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+});
+
 
 export default CommunityScreen;
