@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 250,
+    height: 250,
     marginBottom: 20,
   },
   title: {
@@ -103,6 +103,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
     color: '#333',
+  },
+  dpy: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: '#333',
+  },
+  dpyinput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    // paddingHorizontal: 10,
+    // paddingVertical: 1,
+    fontSize: 10,
   },
   registerinput: {
     borderWidth: 1,

@@ -13,7 +13,13 @@ const Login = () => {
   const navigation = useNavigation();
 
   const handleLogin = () => {
-    setLoading(true);
+    // Validation: Ensure email and password are not empty
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password.');
+      return;
+    }
+
+    setLoading(true); // Set loading to true before making the request
     console.log('Email:', email);
     console.log('Password:', password);
 
@@ -25,11 +31,11 @@ const Login = () => {
     axios
       .post('http://192.168.1.53:5003/login-user', userData)
       .then((res) => {
-        setLoading(false);
-        console.log(res.data);
+        setLoading(false); // Set loading to false once the response is received
+
+        // Check if the login was successful
         if (res.data.status === 'ok') {
           const { userData, selectedInterests } = res.data;
-
           console.log("Log In button clicked! Here is the user data: ", userData, "and selected interests: ", selectedInterests);
 
           Alert.alert('Success', 'Logged in successfully!');
@@ -38,19 +44,19 @@ const Login = () => {
             selectedInterests: selectedInterests,
           });
         } else {
+          // Display an invalid login error message
           Alert.alert('Error', 'Invalid email or password');
         }
       })
       .catch((err) => {
-        setLoading(false);
+        setLoading(false); // Set loading to false in case of error
         console.error('Login Error:', err);
-        Alert.alert('Error', 'Something went wrong. Please try again.');
+        Alert.alert('Error', 'Invalid email or password');
       });
   };
 
-
   return (
-    <View
+    <KeyboardAvoidingView
       style={styles.loginScreenContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
     >
@@ -144,7 +150,7 @@ const Login = () => {
           Sign up
         </Link>
       </Text>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

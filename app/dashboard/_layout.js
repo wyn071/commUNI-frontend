@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'expo-router'; // Import router for navigation
 import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
 import { TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const DashboardLayout = () => {
   console.log("We're in the Dashboard");
@@ -11,13 +12,27 @@ const DashboardLayout = () => {
   const route = useRoute();  // Access the route object
   const { userData, selectedInterests } = route.params || {};  // Extract userData and selectedInterests from route.params
 
+  console.log("Here is what was received from the Interests screen: ");
+  console.log(userData);
+  console.log(selectedInterests);
+
   const navToProfile = () => {
     console.log("navToProfile function called");
-    // console.log("UserData tehee: ", userData);
+    console.log(userData);
+    console.log(selectedInterests);
     // console.log("Your selected interests. These will show up on your profile!: ", selectedInterests);
     router.push({
       pathname: '/dashboard/profilescreen',
       params: { userData, selectedInterests },
+    });
+  };
+
+  const navToFeed = () => {
+    console.log("navToFeed function called");
+    console.log("UserData tehee: ", userData);
+    router.push({
+      pathname: '/dashboard/homescreen',
+      params: { userData },
     });
   };
 
@@ -37,12 +52,27 @@ const DashboardLayout = () => {
           ),
         }}
       />
+      {/* <Tabs.Screen
+        name="homescreen"
+        options={{
+          title: 'Home',
+          tabBarIcon: () => (
+            <MaterialCommunityIcons name="home" size={24} color="black" />
+          ),
+        }}
+      /> */}
       <Tabs.Screen
         name="homescreen"
         options={{
           title: 'Home',
           tabBarIcon: () => (
             <MaterialCommunityIcons name="home" size={24} color="black" />
+          ),
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}  // Spread default tabBarButton props
+              onPress={navToFeed}  // Custom onPress function
+            />
           ),
         }}
       />
@@ -52,6 +82,15 @@ const DashboardLayout = () => {
           title: 'Notifications',
           tabBarIcon: () => (
             <MaterialCommunityIcons name="bell" size={24} color="black" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: 'Chat',
+          tabBarIcon: () => (
+            <MaterialCommunityIcons name="chat" size={24} color="black" />
           ),
         }}
       />
@@ -67,15 +106,6 @@ const DashboardLayout = () => {
               {...props}  // Spread default tabBarButton props
               onPress={navToProfile}  // Custom onPress function
             />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="chat"
-        options={{
-          title: 'Chat',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="chat" size={24} color="black" />
           ),
         }}
       />

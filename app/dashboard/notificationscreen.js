@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 
 const notifications = [
@@ -15,30 +15,40 @@ const notifications = [
 ];
 
 export default function App() {
+  const [isNewUser, setIsNewUser] = useState(true); // Add state to determine if the user is new
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Notifications</Text>
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.sectionHeader}>New</Text>
-        {notifications.slice(0, 3).map((item) => (
-          <NotificationCard
-            key={item.id}
-            name={item.name}
-            action={item.action}
-            time={item.time}
-            image={item.image}
-          />
-        ))}
-        <Text style={styles.sectionHeader}>Earlier</Text>
-        {notifications.slice(3).map((item) => (
-          <NotificationCard
-            key={item.id}
-            name={item.name}
-            action={item.action}
-            time={item.time}
-            image={item.image}
-          />
-        ))}
+        {isNewUser ? (
+          <View style={styles.emptyNotificationsContainer}>
+            <Text style={styles.emptyNotificationsText}>No notifications yet</Text>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.sectionHeader}>New</Text>
+            {notifications.slice(0, 3).map((item) => (
+              <NotificationCard
+                key={item.id}
+                name={item.name}
+                action={item.action}
+                time={item.time}
+                image={item.image}
+              />
+            ))}
+            <Text style={styles.sectionHeader}>Earlier</Text>
+            {notifications.slice(3).map((item) => (
+              <NotificationCard
+                key={item.id}
+                name={item.name}
+                action={item.action}
+                time={item.time}
+                image={item.image}
+              />
+            ))}
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -113,5 +123,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#0f62fe',
     marginRight: 10,
+  },
+  emptyNotificationsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyNotificationsText: {
+    fontSize: 18,
+    color: '#888',
   },
 });

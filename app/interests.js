@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/styles'; // Import styles
 import axios from 'axios';
@@ -9,15 +9,15 @@ import { useRouter } from 'expo-router';
 
 
 const interestList = [
-  '‘90s kid', 'Harry Potter', 'SoundCloud', 'Spa', 'Self-care', 'Heavy metal',
+  '‘90s kid', 'Harry Potter', 'AI', 'Fiction', 'Self-care', 'Heavy metal',
   'House parties', 'Gin & tonic', 'Gymnastics', 'Ludo', 'Maggi', 'Hot yoga',
-  'Biryani', 'Meditation', 'Sushi', 'Spotify', 'Hockey', 'Basketball',
+  'Literature', 'Meditation', 'Sushi', 'Spotify', 'Dystopia', 'Basketball',
   'Slam poetry', 'Home workouts', 'Theatre', 'Café hopping', 'Trainers',
-  'Aquarium', 'Instagram', 'Hot springs', 'Walking', 'Running', 'Travel',
+  'Cybersecurity', 'Instagram', 'Fantasy', 'Walking', 'Running', 'Travel',
   'Language exchange', 'Films', 'Guitarists', 'Social development', 'Gym',
-  'Social media', 'Hip hop', 'Skincare', 'J-Pop', 'Cricket', 'Shisha',
+  'Young Adult', 'Hip hop', 'Skincare', 'J-Pop', 'Data Science', 'Cloud Computing',
   'Freelance', 'K-Pop', 'Skateboarding', 'Gospel', 'Potterhead',
-  'Trying new things', 'Photography', 'Bollywood', 'Bhangra', 'Reading',
+  'Innovation', 'Photography', 'Bollywood', 'Bhangra', 'Reading',
   'Singing', 'Sports', 'Poetry', 'Stand-up comedy', 'Coffee', 'Karaoke',
   'Fortnite', 'Free diving', 'Self-development', 'Mental health awareness',
   'Foodie tour', 'Voter rights', 'Jiu-jitsu', 'Climate change'
@@ -30,6 +30,10 @@ const Interests = () => {
   const router = useRouter();
   const { userData } = route.params || {};
   const parsedUserData = userData ? JSON.parse(userData) : {};  // Parse userData back to an object
+  console.log("nanako sa interests na screen");
+  console.log("Here is what was received: ", userData);
+  console.log("We will be paring this received data.");
+  console.log("Here is what the parsed data looks like: ", parsedUserData);
 
   const toggleInterest = (interest) => {
     if (selectedInterests.includes(interest)) {
@@ -138,6 +142,11 @@ const Interests = () => {
             pathname: '/dashboard',
             params: { userData, selectedInterests },
           });
+
+          console.log("We have just passed the data to the dashboard.");
+          console.log("Here is what was passed to the dashboard");
+          console.log(userData);
+          console.log(selectedInterests);
 
         } else {
           alert('Error saving interests');

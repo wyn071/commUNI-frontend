@@ -1,105 +1,165 @@
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
-import axios from 'axios'; // Import axios
-import styles from '../styles/styles'; // Import styles
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker'; // Import the DateTimePicker
+import axios from 'axios';
+import { Picker } from '@react-native-picker/picker'; // Import Picker for dropdowns
 
+import styles from '../styles/styles';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 const Register = () => {
   const [activeTab, setActiveTab] = useState('Student');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [birthday, setBirthday] = useState(new Date()); // Store the selected birthday
+  const [birthday, setBirthday] = useState(new Date());
   const [idNumber, setIdNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [program, setProgram] = useState('');
-  const [department, setDepartment] = useState('');
-  const [loading, setLoading] = useState(false); // Add loading state
-  const [showDatePicker, setShowDatePicker] = useState(false); // Show date picker flag
-  const router = useRouter(); // Initialize router
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [programs, setPrograms] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState('');
+  const [selectedYearLevel, setSelectedYearLevel] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const router = useRouter();
+  console.log("We are in the Register Screen");
 
-  // Get the current date and set the maximum date to 2024
-  const currentDate = new Date();
-  const maxDate = new Date(2024, 11, 31); // December 31, 2024
+  const maxDate = new Date(2024, 12, 31);
 
-  // Validation states for each field
-  const [firstNameVerify, setFirstNameVerify] = useState(true);
-  const [lastNameVerify, setLastNameVerify] = useState(true);
-  const [emailVerify, setEmailVerify] = useState(true);
-  const [passwordVerify, setPasswordVerify] = useState(true);
-  const [birthdayVerify, setBirthdayVerify] = useState(true);
-  const [idNumberVerify, setIdNumberVerify] = useState(true);
-  const [programVerify, setProgramVerify] = useState(true);
-
-  // Function to capitalize the first letter
   const capitalizeFirstLetter = (text) => {
     return text.replace(/^\w/, (c) => c.toUpperCase());
+  };
+
+  const departmentPrograms = {
+    "College of Engineering and Architecture": [
+      "BS Arch",
+      "BS CE",
+      "BS ME",
+      "BS CpE",
+      "BS GE",
+      "BS EE",
+      "BS ECE",
+      "MEng",
+      "MSEE",
+      "MS SD (Urban Planning)",
+      "PSM PSEM",
+      "PhD EE",
+    ],
+    "College of Information Technology and Computing": [
+      "BS IT",
+      "BS CS",
+      "BS DS",
+      "BS TCM",
+      "MIT",
+      "MS TCM",
+    ],
+    "College of Science and Mathematics": [
+      "BS AM", // Bachelor of Science in Applied Mathematics
+      "BS AP", // Bachelor of Science in Applied Physics
+      "BS Chem", // Bachelor of Science in Chemistry
+      "BS ES", // Bachelor of Science in Environmental Science
+      "BS FT", // Bachelor of Science in Food Technology
+      "MS AM", // Master of Science in Applied Mathematics
+      "MS EST", // Master of Science in Environmental Science and Technology
+      "PhD AM", // Doctor of Philosophy in Applied Mathematics
+    ],
+    "College of Science and Technology Education": [
+      "BSEd Science", // Bachelor in Secondary Education Major in Science
+      "BSEd Math", // Bachelor in Secondary Education Major in Mathematics
+      "BTLEd", // Bachelor in Technology and Livelihood Education
+      "BTVTEd", // Bachelor in Technical-Vocational Teacher Education
+      "CoT", // Certificate of Teaching
+      "MS Math Ed", // Master of Science in Mathematics Education
+      "MS Sci Ed Chem", // Master of Science in Science Education (Chemistry)
+      "MS Sci Ed Phys", // Master of Science in Science Education (Physics)
+      "MA SpEd", // Master of Arts in Teaching Special Education
+      "MA TESL", // Master of Arts in Teaching English as a Second Language
+      "MTTE", // Master in Technical and Technology Education
+      "PhD Math Ed", // Doctor of Philosophy in Mathematics Education
+      "PhD Sci Ed Chem", // Doctor of Philosophy in Science Education Major in Chemistry
+      "DTech Ed", // Doctor of Technology Education
+    ],
+    "College of Technology": [
+      "Bachelor of Science in Accounting",
+      "Bachelor of Science in Marketing",
+      "Bachelor of Science in Finance",
+    ],
+    "College of Medicine": [
+    ],
+    "Senior High School": [
+    ],
+  };
+
+  const yearLevels = ["Freshman", "Sophomore", "Junior", "Senior"];
+
+  // Handle department change
+  const handleDepartmentChange = (department) => {
+    setSelectedDepartment(department);
+    setPrograms(departmentPrograms[department] || []); // Update programs based on department
+    setSelectedProgram(''); // Reset program selection
   };
 
 
   const handleRegister = () => {
     const birthdayFormatted = `${birthday.getFullYear()}-${(birthday.getMonth() + 1).toString().padStart(2, '0')}-${birthday.getDate().toString().padStart(2, '0')}`;
 
-    // Validate mandatory fields
-    setFirstNameVerify(firstName !== '');
-    setLastNameVerify(lastName !== '');
-    setEmailVerify(email !== '');
-    setPasswordVerify(password.length >= 6);  // Check if password is at least 6 characters
-    setBirthdayVerify(birthdayFormatted !== '--' && birthday !== '');
-    setIdNumberVerify(idNumber !== '');
-    setProgramVerify(program !== '');
-
-    // Check if password is at least 6 characters
-    if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
-      return;  // Stop the registration process if password is too short
-    }
-
-    // Check if the user is 18 or older before proceeding with registration
     const today = new Date();
     const birthDate = new Date(birthday);
     const age = today.getFullYear() - birthDate.getFullYear();
     const month = today.getMonth() - birthDate.getMonth();
-
-    if (age < 18 || (age === 18 && month < 0)) {
-      Alert.alert('Error', 'You must be at least 18 years old to register.');
-      return;  // Stop the registration process if the user is under 18
-    }
-
-    // Log the data being sent to the server
     const userData = {
       firstName,
       lastName,
       email,
       password,
       idNumber,
-      program,
+      program: selectedProgram,
+      department: selectedDepartment,
       birthday: birthdayFormatted,
+      yearlevel: selectedYearLevel
     };
 
-    console.log('Sending data:', userData); // Log the data
+    // console.log('Sending data:', userData);
 
-    // Check if all required fields are filled
-    if (firstName && lastName && email && password && birthdayFormatted && idNumber && program) {
-      setLoading(true); // Start loading animation
+
+
+    if (firstName && lastName && email && password && birthdayFormatted && idNumber && selectedProgram && selectedDepartment && selectedYearLevel) {
+      if (!termsAccepted) {
+        Alert.alert('Error', 'You must accept the terms and privacy policy to proceed.');
+        return;
+      }
+
+      if (age < 18 || (age === 18 && month < 0)) {
+        Alert.alert('Error', 'You must be at least 18 years old to register.');
+        return;
+      }
+
+      if (password.length < 6) {
+        Alert.alert('Error', 'Password must be at least 6 characters');
+        return;
+      }
+
+
+      setLoading(true);
       axios
         .post('http://192.168.1.53:5003/register', userData)
         .then((res) => {
-          console.log(res.data);
-          // Pass the userData to the next screen (StartScreen)
+          // console.log(res.data);
           router.push({
             pathname: 'startscreen',
-            params: { userData: JSON.stringify(userData) }, // Pass as string
+            params: { userData: JSON.stringify(userData) },
           });
+          console.log("We have just passed the data from the Register screen.");
+          console.log("Still in the Register Screen. The passed data is below: ");
+          console.log(JSON.stringify(userData));
         })
         .catch((error) => {
-          setLoading(false); // Stop loading animation
+          setLoading(false);
           if (error.response) {
             console.log('Response error:', error.response.data);
-            Alert.alert('Error', `Server Error: ${error.response.data}`);
+            // Alert.alert('Error', `Server Error: ${error.response.data}`);
+            Alert.alert('Error', `${error.response.data.data || 'Unknown error'}`);
           } else if (error.request) {
             console.log('Request error:', error.request);
             Alert.alert('Error', 'No response from server');
@@ -111,25 +171,38 @@ const Register = () => {
     } else {
       Alert.alert('Please fill in all mandatory fields');
     }
+
+    // if (!termsAccepted) {
+    //   Alert.alert('Error', 'You must accept the terms and privacy policy to proceed.');
+    //   return;
+    // }
+
+    // if (password.length < 6) {
+    //   Alert.alert('Error', 'Password must be at least 6 characters');
+    //   return;
+    // }
+
+    // if (age < 18 || (age === 18 && month < 0)) {
+    //   Alert.alert('Error', 'You must be at least 18 years old to register.');
+    //   return;
+    // }
   };
 
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
 
     if (selectedDate) {
-      // Calculate age
       const today = new Date();
       const birthDate = new Date(selectedDate);
       const age = today.getFullYear() - birthDate.getFullYear();
       const month = today.getMonth() - birthDate.getMonth();
 
-      // Check if the user is 18 or older
       if (age < 18 || (age === 18 && month < 0)) {
         Alert.alert('Error', 'You must be at least 18 years old to register.');
         setBirthday(new Date());
-        return;  // Do not set the birthday if the user is under 18
+        return;
       } else {
-        setBirthday(selectedDate);  // Set the valid birthday if age is 18 or older
+        setBirthday(selectedDate);
       }
     }
   };
@@ -214,28 +287,59 @@ const Register = () => {
             />
           </View>
 
-          {/* Conditional Fields */}
-          {activeTab === 'Student' ? (
-            <View style={styles.registerinputContainer}>
-              <Text style={styles.registerlabel}>Program</Text>
-              <TextInput
-                placeholder="Enter program"
-                style={styles.registerinput}
-                value={program}
-                onChangeText={setProgram}
-              />
+          {/* Department Dropdown */}
+          <View style={styles.registerinputContainer}>
+            <Text style={styles.dpy}>Department</Text>
+            <View style={[styles.pickerContainer, { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 }]}>
+              <Picker
+                selectedValue={selectedDepartment}
+                onValueChange={handleDepartmentChange}
+                style={[styles.dpyinput, { fontSize: 14 }]}  // Ensure fontSize is consistent for the text in the Picker
+              >
+                <Picker.Item label="Select your department" value="" style={{ fontSize: 14 }} />
+                {Object.keys(departmentPrograms).map((department) => (
+                  <Picker.Item key={department} label={department} value={department} style={{ fontSize: 14 }} />
+                ))}
+              </Picker>
             </View>
-          ) : (
-            <View style={styles.registerinputContainer}>
-              <Text style={styles.registerlabel}>Department</Text>
-              <TextInput
-                placeholder="Enter department"
-                style={styles.registerinput}
-                value={department}
-                onChangeText={setDepartment}
-              />
+          </View>
+
+          {/* Program Dropdown */}
+          <View style={styles.registerinputContainer}>
+            <Text style={styles.dpy}>Program</Text>
+            <View style={[styles.pickerContainer, { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 }]}>
+              <Picker
+                selectedValue={selectedProgram}
+                onValueChange={(program) => setSelectedProgram(program)}
+                style={[styles.dpyinput, { fontSize: 14 }]}  // Ensure fontSize is consistent for the text in the Picker
+                enabled={programs.length > 0}
+              >
+                <Picker.Item label="Select your program" value="" style={{ fontSize: 14 }} />
+                {programs.map((program) => (
+                  <Picker.Item key={program} label={program} value={program} style={{ fontSize: 14 }} />
+                ))}
+              </Picker>
             </View>
-          )}
+          </View>
+
+          {/* Year Level Dropdown */}
+          <View style={styles.registerinputContainer}>
+            <Text style={styles.dpy}>Year Level</Text>
+            <View style={[styles.pickerContainer, { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 }]}>
+              <Picker
+                selectedValue={selectedYearLevel}
+                onValueChange={(yearLevel) => setSelectedYearLevel(yearLevel)}
+                style={[styles.dpyinput, { fontSize: 14 }]}  // Ensure fontSize is consistent for the text in the Picker
+              >
+                <Picker.Item label="Select your year level" value="" style={{ fontSize: 14 }} />
+                {yearLevels.map((yearLevel) => (
+                  <Picker.Item key={yearLevel} label={yearLevel} value={yearLevel} style={{ fontSize: 14 }} />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
+
 
           {/* Terms and Policy */}
           <TouchableOpacity
@@ -255,14 +359,6 @@ const Register = () => {
           <TouchableOpacity style={styles.registerbutton} onPress={handleRegister}>
             <Text style={styles.registerbuttonText}>Create account</Text>
           </TouchableOpacity>
-
-          {/* <Text style={styles.orRegisterWithText}>Or register with</Text>
-
-          <View style={styles.registersocialContainer}>
-            <MaterialCommunityIcons name="facebook" size={32} />
-            <MaterialCommunityIcons name="google" size={32} />
-            <MaterialCommunityIcons name="apple" size={32} />
-          </View> */}
 
           <Text style={styles.registerfooterText}>
             Already have an account?{' '}

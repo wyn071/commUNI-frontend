@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import {
   View,
@@ -10,114 +12,90 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../../styles/styles"; // Adjust this path to your stylesheet
+import viandli from "../../assets/viandli.png"; // Correct image path
+import { useRouter } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const route = useRoute();
+  const router = useRouter();
+  const { userData } = route.params || {};
+  const parsedUserData = userData ? JSON.parse(userData) : {};
+
+  const firstName = parsedUserData.firstName;
+  const lastName = parsedUserData.lastName;
+  const fullName = `${firstName} ${lastName}`;
+  const yearlevel = parsedUserData.yearlevel;
+  const [profilePicture, setProfilePicture] = useState(parsedUserData.profilePicture || 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg');
+
+  console.log('userData:', userData);  // Check if userData is properly passed
+  console.log('parsedUserData:', parsedUserData);
+  console.log(firstName); // Check final fullName
+  console.log(parsedUserData.firstName);
+
   const [posts, setPosts] = useState([
-    {
-      id: "1",
-      user: "Tech Innovators Guild",
-      time: "15 mins ago",
-      content: "Hey Techies! Join us this Friday for an AI workshop.",
-      image: "https://picsum.photos/400/200?random=1",
-      likes: 14,
-      comments: [],
-    },
-    {
-      id: "2",
-      user: "Chess Club USC",
-      time: "30 mins ago",
-      content: "Join our chess tournament this December 20th at DRER Hall!",
-      image: "https://picsum.photos/400/200?random=2",
-      likes: 147,
-      comments: ["Can't wait!", "Good luck everyone!"],
-    },
-    {
-      id: "3",
-      user: "Fourth Wing Club",
-      time: "1 hour ago",
-      content: "Check out our latest book review session this weekend!",
-      image: "https://picsum.photos/400/200?random=3",
-      likes: 35,
-      comments: ["Sounds fun!", "I'm joining!"],
-    },
-    {
-      id: "4",
-      user: "Natalie Patt",
-      time: "2 hours ago",
-      content: "Excited for the next hackathon! Who else is joining?",
-      image: "https://picsum.photos/400/200?random=4",
-      likes: 90,
-      comments: ["Me too!", "Best of luck!"],
-    },
-    {
-      id: "5",
-      user: "John Smith",
-      time: "3 hours ago",
-      content: "The basketball league starts this Friday. Get ready!",
-      image: "https://picsum.photos/400/200?random=5",
-      likes: 70,
-      comments: ["Go team!", "Can't wait!"],
-    },
-    {
-      id: "6",
-      user: "Machine Learning Society",
-      time: "4 hours ago",
-      content:
-        "Hands-on deep learning workshop this Thursday. Limited slots available!",
-      image: "https://picsum.photos/400/200?random=6",
-      likes: 120,
-      comments: ["Amazing!", "Signed up already!"],
-    },
-    {
-      id: "7",
-      user: "Creative Writing Club",
-      time: "5 hours ago",
-      content: "Submit your short stories for this month's contest!",
-      image: "https://picsum.photos/400/200?random=7",
-      likes: 45,
-      comments: ["Where to submit?", "Excited for this!"],
-    },
-    {
-      id: "8",
-      user: "David Ramos",
-      time: "6 hours ago",
-      content: "Volunteering event happening this weekend. Come join us!",
-      image: "https://picsum.photos/400/200?random=8",
-      likes: 55,
-      comments: ["I'm in!", "Great initiative!"],
-    },
-    {
-      id: "9",
-      user: "Poetry Club",
-      time: "Yesterday",
-      content: "Join us for a night of poetry reading at the library!",
-      image: "https://picsum.photos/400/200?random=9",
-      likes: 60,
-      comments: ["Count me in!", "Love poetry nights!"],
-    },
-    {
-      id: "10",
-      user: "Hiking Enthusiasts",
-      time: "2 days ago",
-      content: "New trail discovered! Meet us Saturday for the hike.",
-      image: "https://picsum.photos/400/200?random=10",
-      likes: 80,
-      comments: ["Where's the meetup?", "Looking forward to this!"],
-    },
+    // {
+    //   id: "1",
+    //   user: "AI Pioneers",
+    //   time: "15 mins ago",
+    //   content: "Excited to announce our upcoming webinar on Machine Learning trends in 2024! Join us to explore cutting-edge advancements and network with industry experts.",
+    //   image: "https://picsum.photos/400/200?random=1",
+    //   likes: 13,
+    //   comments: [],
+    //   likedByUser: false,  // Initialize likedByUser
+    // },
+    // {
+    //   id: "2",
+    //   user: "Tech Innovators Guild",
+    //   time: "1 hr ago",
+    //   content: "Our latest blog post dives into the future of web development. Discover the new frameworks and tools that will shape the industry in 2025.\n\nCheck out: https://www.techinnovators.com",
+    //   likes: 147,
+    //   comments: ["Can't wait!", "Good luck everyone!"],
+    //   likedByUser: false,  // Initialize likedByUser
+    // },
+    // {
+    //   id: "3",
+    //   user: "Fourth Wing Club",
+    //   time: "2 hours ago",
+    //   content: "Violet and Liam's letters",
+    //   image: "https://i.ibb.co/S5sRvTG/your-image.jpg",  // Correct image import
+    //   likes: 352,
+    //   comments: ["Sounds fun!", "I'm joining!"],
+    //   likedByUser: false,  // Initialize likedByUser
+    // },
   ]);
 
   const [newPost, setNewPost] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const handleNavigateToProfile = () => {
+    router.push({
+      pathname: '/profile',
+      params: { posts: posts }, // Pass the posts data
+    });
+  };
+
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
+      if (result.canceled) {
+        console.log("User canceled image picker");
+        return;
+      }
+
+      if (!result.assets || result.assets.length === 0) {
+        console.log("No image selected");
+        return;
+      }
+
       setSelectedImage(result.assets[0].uri);
+    } catch (error) {
+      console.log("Error picking image:", error);
     }
   };
 
@@ -127,26 +105,22 @@ const HomeScreen = () => {
     setPosts([
       {
         id: Date.now().toString(),
-        user: "You",
+        user: fullName,
         time: "Just now",
         content: newPost,
         image: selectedImage,
         likes: 0,
         comments: [],
+        likedByUser: false, // Initialize likedByUser
       },
       ...posts,
     ]);
     setNewPost("");
     setSelectedImage(null);
-  };
 
-  // const handleLike = (id) => {
-  //   setPosts((prev) =>
-  //     prev.map((post) =>
-  //       post.id === id ? { ...post, likes: post.likes + 1 } : post
-  //     )
-  //   );
-  // };
+    handleNavigateToProfile();
+
+  };
 
   const handleLike = (id) => {
     setPosts((prev) =>
@@ -162,12 +136,21 @@ const HomeScreen = () => {
     );
   };
 
+  // Function to get a random profile picture for each post
+  const getRandomProfileImage = (id) => {
+    return `https://picsum.photos/seed/${id}/50`;
+  };
+
+  // Set your own profile picture URL
+  // const myProfileImage = "https://i.ibb.co/4t3GT4L/your-image.jpg";
+  const myProfileImage = profilePicture;
+
   return (
     <View style={styles.homeContainer}>
       {/* Post Input Container */}
       <View style={styles.postInputContainer}>
         <Image
-          source={{ uri: "https://picsum.photos/50/50" }}
+          source={{ uri: myProfileImage }}
           style={styles.avatar}
         />
         <TextInput
@@ -194,8 +177,10 @@ const HomeScreen = () => {
         renderItem={({ item }) => (
           <View style={styles.postCard}>
             <View style={styles.postHeader}>
+              {/* Display your profile picture for your posts, random image for others */}
               <Image
-                source={{ uri: "https://picsum.photos/seed/user/50" }}
+                source={{ uri: item.user === fullName ? myProfileImage : getRandomProfileImage(item.id) }}
+                // source={{ uri: item.user === "You" ? myProfileImage : myProfileImage }}
                 style={styles.postAvatar}
               />
               <View>
@@ -213,6 +198,7 @@ const HomeScreen = () => {
                   name={item.likedByUser ? "heart" : "heart-outline"}
                   size={20}
                   color="red"
+                  accessibilityLabel="Like button"
                 />
                 <Text>{item.likes} Likes</Text>
               </TouchableOpacity>
@@ -220,7 +206,6 @@ const HomeScreen = () => {
           </View>
         )}
       />
-
     </View>
   );
 };

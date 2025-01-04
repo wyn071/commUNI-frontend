@@ -1,28 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router'; // Import router for navigation
 import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
-import { useState, useEffect } from 'react';
+import * as ImagePicker from 'expo-image-picker';
 
+// teddy = https://i.ibb.co/yN9ftfq/teddy-bear.jpg
+// grey = https://i.ibb.co/2Yy9JM4/your-image.jpg
+// emptypfp = https://i.ibb.co/x1DvXZN/empty-pfp.jpg
 
-export default function App() {
+export default function ProfileScreen() {
   const router = useRouter(); // Initialize the router
-  const route = useRoute();  // Access the route object
-  const { userData, selectedInterests } = route.params || {};  // Extract userData and selectedInterests from route.params
-  const parsedUserData = userData ? JSON.parse(userData) : {};  // Parse userData back to an object
+  const route = useRoute(); // Access the route object
+  const { userData, selectedInterests } = route.params || {}; // Extract userData and selectedInterests from route.params
+  const parsedUserData = userData ? JSON.parse(userData) : {}; // Parse userData back to an object
 
-  console.log("nanako sa Profile Screen");
-  // console.log(userData); // Log to see if userData is passed correctly
-  // console.log(selectedInterests); // Log to see if selectedInterests is passed correctly
-  // console.log(Array.isArray(selectedInterests), selectedInterests);  // Check if it's an array
+  let processedInterests = selectedInterests;
+
+  if (typeof selectedInterests === "string") {
+    processedInterests = selectedInterests.split(",").map((selectedInterests) => selectedInterests.trim());
+  }
 
   const [interestsArray, setInterestsArray] = useState([]);
   const firstName = parsedUserData.firstName;
   const lastName = parsedUserData.lastName;
   const fullName = `${firstName} ${lastName}`;
-
+  const department = parsedUserData.department;
+  const program = parsedUserData.program;
+  const yearlevel = parsedUserData.yearlevel;
+  const [profilePicture, setProfilePicture] = useState(parsedUserData.profilePicture || 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg');
+  const [headerImage, setHeaderImage] = useState(parsedUserData.headerImage || 'https://i.ibb.co/2Yy9JM4/emptyheader.jpg');
 
   useEffect(() => {
+    fetchUserImagesAndInterests();
     // Check if selectedInterests is a string and convert it to an array
     if (typeof selectedInterests === 'string') {
       setInterestsArray(selectedInterests.split(','));
@@ -31,58 +40,128 @@ export default function App() {
     }
   }, [selectedInterests]); // Only rerun when selectedInterests changes
 
+
+  const fetchUserImagesAndInterests = async () => {
+    try {
+      const response = await fetch('http://192.168.1.53:5003/get-user-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: parsedUserData.email }),
+      });
+
+      const rawText = await response.text();
+      try {
+        const data = JSON.parse(rawText);
+        if (data.status === 'ok') {
+          setProfilePicture(data.user.profilePicture || 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg');
+          setHeaderImage(data.user.headerImage || 'https://i.ibb.co/2Yy9JM4/emptyheader.jpg');
+          setInterestsArray(data.user.selectedInterests || []);
+        } else {
+          // Alert.alert('Error', data.message || 'Failed to fetch user data.');
+        }
+      } catch {
+        console.error('Server returned invalid JSON:', rawText);
+        Alert.alert('Error', 'Invalid server response.');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      Alert.alert('Error', 'An error occurred while fetching user data.');
+    }
+  };
   const handleLogout = () => {
     // Logic for logging out can go here, such as clearing tokens or state
     console.log('Logging out...');
     router.replace('/login'); // Navigate to the login screen
   };
 
+  const pickImage = async (setImage) => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.uri); // Update the image state with the selected URI
+    }
+  };
+
+  const saveImages = async () => {
+    try {
+      const response = await fetch("http://<YOUR_BACKEND_URL>/update-profile-images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: parsedUserData.email,
+          profilePicture,
+          headerImage,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        alert("Profile images updated successfully!");
+      } else {
+        alert("Error updating profile images: " + data.data);
+      }
+    } catch (error) {
+      console.error("Error saving profile images:", error);
+      alert("An error occurred while saving your images.");
+    }
+  };
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://picsum.photos/seed/profile-bg/500/300' }}
-          style={styles.headerImage}
-        />
+        <Image source={{ uri: headerImage }} style={styles.headerImage} />
+
       </View>
 
       {/* Profile Section */}
       <View style={styles.profileSection}>
-        <Image
-          source={{ uri: 'https://picsum.photos/seed/profile/100' }}
-          style={styles.profileImage}
-        />
+
+        <Image source={{ uri: profilePicture }} style={styles.profileImage} />
+
         <Text style={styles.name}>{fullName}</Text>
         <Text style={styles.bio}>
-          Bachelor of Science of Information Technology{"\n"}CITC Department{"\n"}Junior
+          {program}{"\n"}{department}{"\n"}{yearlevel}
         </Text>
-        <Text style={styles.communities}>7 communities joined</Text>
+        <Text style={styles.communities}>0 communities joined</Text>
 
         {/* Followers and Following */}
         <View style={styles.followSection}>
           <View style={styles.followBox}>
-            <Text style={styles.followNumber}>152</Text>
+            <Text style={styles.followNumber}>0</Text>
             <Text style={styles.followLabel}>Followers</Text>
           </View>
           <View style={styles.followBox}>
-            <Text style={styles.followNumber}>241</Text>
+            <Text style={styles.followNumber}>0</Text>
             <Text style={styles.followLabel}>Following</Text>
           </View>
         </View>
 
         {/* Interests */}
         <View style={styles.tagsContainer}>
-          {interestsArray.map((interest, index) => (
+          {interestsArray.map((selectedInterests, index) => (
             <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{interest}</Text>
+              <Text style={styles.tagText}>{selectedInterests}</Text>
             </View>
           ))}
         </View>
 
         {/* Buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              router.push({
+                pathname: '/editprofilescreen', // Navigate to edit profile screen
+                params: { userData, selectedInterests },
+              })
+            }
+          >
             <Text style={styles.buttonText}>Edit Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
@@ -102,31 +181,52 @@ export default function App() {
         </View>
       </View>
 
-      {/* Scrollable Posts */}
-      <ScrollView style={styles.postsSection}>
+      {/* Posts */}
+      {/* <View style={styles.postsSection}>
         <View style={styles.postCard}>
           <View style={styles.postHeader}>
             <Image
-              source={{ uri: 'https://picsum.photos/seed/post-icon/50/50' }}
+              source={{ uri: 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg' }}
               style={styles.postAvatar}
             />
             <View>
-              <Text style={styles.postTitle}>Tech Innovators Guild</Text>
-              <Text style={styles.postSubtitle}>{fullName} · Junior · BSIT · 2 weeks ago</Text>
+              <Text style={styles.postTitle}>{fullName}</Text>
+              <Text style={styles.postSubtitle}>{fullName} · {yearlevel} · {program} · Just now</Text>
             </View>
           </View>
-          <Text style={styles.postContent}>
-            Hi. I'm gearing up for my first hackathon this weekend, and I'd love some advice from
-            experienced participants. What should I expect and how can I make the most out of it?
-            Looking forward to your responses!
-          </Text>
+          <Text style={styles.postContent}>Test</Text>
         </View>
-      </ScrollView>
-    </View>
+
+        <View style={styles.postCard}>
+          <View style={styles.postHeader}>
+            <Image
+              source={{ uri: 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg' }}
+              style={styles.postAvatar}
+            />
+            <View>
+              <Text style={styles.postTitle}>{fullName}</Text>
+              <Text style={styles.postSubtitle}>{fullName} · {yearlevel} · {program} · Just now</Text>
+            </View>
+          </View>
+          <Text style={styles.postContent}>Test</Text>
+          <Image
+            source={{ uri: 'https://i.ibb.co/yN9ftfq/teddy-bear.jpg' }}
+            style={styles.postImage}
+          />
+        </View>
+      </View> */}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  postImage: {
+    width: '100%', // Make the image take the full width of the post
+    height: 250,   // Set the height of the image
+    borderRadius: 10, // Optional: Adds rounded corners
+    marginTop: 10,    // Adds spacing between the text and the image
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
@@ -206,20 +306,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: 'row', // Keep buttons in a row
     marginVertical: 10,
+    justifyContent: 'space-around', // Space out the buttons evenly
+    width: '100%',
   },
   button: {
-    backgroundColor: '#e7e7f3',
-    paddingVertical: 5,
+    backgroundColor: 'rgba(99, 94, 226, 0.8)', // #635EE2 with 80% opacity
+    paddingVertical: 8, // Maintain compact padding
     paddingHorizontal: 20,
-    borderRadius: 20,
-    marginHorizontal: 5,
+    borderRadius: 10, // Slightly rounded corners
+    marginHorizontal: 1,
+    alignItems: 'center', // Center the text
   },
   buttonText: {
-    color: '#555',
-    fontWeight: 'bold',
+    color: '#fff', // White text for contrast
+    fontWeight: '500',
+    fontSize: 14,
   },
+
   tabsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -276,3 +381,4 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 });
+
