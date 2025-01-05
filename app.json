@@ -2,7 +2,9 @@
   "expo": {
     "name": "communi-frontend",
     "slug": "communi-frontend",
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "scheme": "com.communi.app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/communi-logo.png",
         "backgroundColor": "#ffffff"
       }
     },
