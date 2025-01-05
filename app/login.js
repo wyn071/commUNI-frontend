@@ -29,7 +29,7 @@ const Login = () => {
     };
 
     axios
-      .post('http://192.168.1.53:5003/login-user', userData)
+      .post('https://communi-backend-db87843b2e3b.herokuapp.com/login-user', userData)
       .then((res) => {
         setLoading(false); // Set loading to false once the response is received
 

@@ -158,7 +158,7 @@ export default function EditProfileScreen() {
     // Save image URL to the database
     const saveImageToDatabase = async (imageUrl, type) => {
         try {
-            const response = await fetch('http://192.168.1.53:5003/upload-image', {
+            const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/upload-image', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -194,7 +194,7 @@ export default function EditProfileScreen() {
             }
             console.log("Processed Interests (as array):", processedInterests);
 
-            const response = await fetch('http://192.168.1.53:5003/save-interests', {
+            const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/save-interests', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

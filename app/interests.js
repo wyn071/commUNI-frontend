@@ -126,7 +126,7 @@ const Interests = () => {
       Alert.alert('No Interests Selected', 'Please select at least one interest to continue.');
     } else {
       try {
-        const response = await axios.post('http://192.168.1.53:5003/save-interests', {
+        const response = await axios.post('https://communi-backend-db87843b2e3b.herokuapp.com/save-interests', {
           email: parsedUserData.email,  // Send the user's email
           selectedInterests: selectedInterests,  // Send the selected interests
         });

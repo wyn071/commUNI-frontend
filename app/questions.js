@@ -88,7 +88,7 @@ const QuestionsScreen = () => {
         mbtiResult: result
       });
 
-      const response = await axios.post('http://192.168.1.53:5003/save-mbti', {
+      const response = await axios.post('https://communi-backend-db87843b2e3b.herokuapp.com/save-mbti', {
         email: parsedUserData.email,  // Send the user's email
         mbtiResult: result,           // Send the calculated MBTI result
       });

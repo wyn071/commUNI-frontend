@@ -62,7 +62,7 @@ export default function ProfileScreen() {
 
   const fetchUserImagesAndInterests = async () => {
     try {
-      const response = await fetch('http://192.168.1.53:5003/get-user-data', {
+      const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/get-user-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: parsedUserData.email }),

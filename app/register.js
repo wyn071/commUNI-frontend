@@ -143,7 +143,7 @@ const Register = () => {
 
       setLoading(true);
       axios
-        .post('http://192.168.1.53:5003/register', userData)
+        .post('https://communi-backend-db87843b2e3b.herokuapp.com/register', userData)
         .then((res) => {
           // console.log(res.data);
           router.push({
