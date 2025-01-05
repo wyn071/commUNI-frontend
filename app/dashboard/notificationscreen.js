@@ -8,47 +8,39 @@ const notifications = [
   { id: 4, name: 'Lorenz Largosa', action: 'reacted 😊 to your comment', time: '30m', image: '1004' },
   { id: 5, name: 'Aljohn Arranguez', action: 'reposted your post', time: '45m', image: '1005' },
   { id: 6, name: 'John Smith', action: 'commented on your post', time: '1h', image: '1006' },
-  { id: 7, name: 'John Smith', action: 'reacted 😊 to your post', time: '1h', image: '1007' },
+  { id: 7, name: 'John Smith', action: 'reacted 😊 to your post', time: '1h', image: '1006' },
   { id: 8, name: 'Emily Doe', action: 'shared your post', time: '2h', image: '1008' },
   { id: 9, name: 'Anna Cruz', action: 'followed you', time: '3h', image: '1009' },
   { id: 10, name: 'Brian Lee', action: 'liked your photo', time: '4h', image: '1010' },
 ];
 
 export default function App() {
-  const [isNewUser, setIsNewUser] = useState(true); // Add state to determine if the user is new
+  // const [isNewUser, setIsNewUser] = useState(true); // Add state to determine if the user is new
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Notifications</Text>
       <ScrollView style={styles.scrollView}>
-        {isNewUser ? (
-          <View style={styles.emptyNotificationsContainer}>
-            <Text style={styles.emptyNotificationsText}>No notifications yet</Text>
-          </View>
-        ) : (
-          <>
-            <Text style={styles.sectionHeader}>New</Text>
-            {notifications.slice(0, 3).map((item) => (
-              <NotificationCard
-                key={item.id}
-                name={item.name}
-                action={item.action}
-                time={item.time}
-                image={item.image}
-              />
-            ))}
-            <Text style={styles.sectionHeader}>Earlier</Text>
-            {notifications.slice(3).map((item) => (
-              <NotificationCard
-                key={item.id}
-                name={item.name}
-                action={item.action}
-                time={item.time}
-                image={item.image}
-              />
-            ))}
-          </>
-        )}
+        <Text style={styles.sectionHeader}>New</Text>
+        {notifications.slice(0, 3).map((item) => (
+          <NotificationCard
+            key={item.id}
+            name={item.name}
+            action={item.action}
+            time={item.time}
+            image={item.image}
+          />
+        ))}
+        <Text style={styles.sectionHeader}>Earlier</Text>
+        {notifications.slice(3).map((item) => (
+          <NotificationCard
+            key={item.id}
+            name={item.name}
+            action={item.action}
+            time={item.time}
+            image={item.image}
+          />
+        ))}
       </ScrollView>
     </View>
   );

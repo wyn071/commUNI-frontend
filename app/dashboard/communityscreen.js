@@ -1,15 +1,14 @@
 // CommunityScreen.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, Alert, Modal, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../../styles/styles"; // Adjust this path as needed
 import images from "../../assets/images"; // Import the images object
+import HomeScreen, { addNewPosts } from "./homescreen";
 
 
 const communityData = [
-  { id: 1, name: "Literature", tags: ["Fantasy", "Dystopia", "Literature"], logo: images.literature },
-  // { id: 1, name: "AI Pioneers", tags: ["Artificial Intelligence", "Machine Learning"], logo: images.aipioneers },
-  // { id: 1, name: "Blockchain Builders", tags: ["Blockchain", "Crypto"], logo: images.blockchainBuilders },
+  { id: 1, name: "Blockchain Builders", tags: ["Blockchain", "Crypto"], logo: images.blockchainBuilders },
   { id: 2, name: "AI Coders Hub", tags: ["AI", "Coding", "Projects"], logo: images.aiCodersHub },
   { id: 3, name: "Data Science Hub", tags: ["Data Science", "Analytics"], logo: images.dataScienceHub }, //
   { id: 4, name: "CyberSec Experts", tags: ["Cybersecurity", "Ethical Hacking"], logo: images.cyberSecExperts },
@@ -23,8 +22,22 @@ const communityData = [
   { id: 12, name: "Potterheads", tags: ["Harry Potter", "Wizardry", "Fantasy"], logo: images.potterheads },
   { id: 13, name: "Literature", tags: ["Fantasy", "Dystopia", "Literature"], logo: images.literature },
   { id: 14, name: "Game Developers", tags: ["Game Dev", "Unity", "Unreal"], logo: images.gameDevelopers },
-  { id: 15, name: "Literature", tags: ["Fantasy", "Dystopia", "Literature"], logo: images.literature },
-  // { id: 15, name: "AI Pioneers", tags: ["Artificial Intelligence", "Machine Learning"], logo: images.aipioneers },
+  { id: 15, name: "AI Pioneers", tags: ["Artificial Intelligence", "Machine Learning"], logo: images.aipioneers },
+  { id: 16, name: "Literature", tags: ["Fantasy", "Dystopia", "Literature"], logo: images.literature },
+  { id: 17, name: "AI Pioneers", tags: ["Artificial Intelligence", "Machine Learning"], logo: images.aipioneers },
+  { id: 18, name: "AI Coders Hub", tags: ["AI", "Coding", "Projects"], logo: images.aiCodersHub },
+  { id: 19, name: "Data Science Hub", tags: ["Data Science", "Analytics"], logo: images.dataScienceHub }, //
+  { id: 20, name: "CyberSec Experts", tags: ["Cybersecurity", "Ethical Hacking"], logo: images.cyberSecExperts },
+  { id: 21, name: "Cloud Heroes", tags: ["Cloud Computing", "AWS", "Azure"], logo: images.cloudHeroes },
+  { id: 22, name: "Tech Innovators Guild", tags: ["Technology", "AI", "Web Dev"], logo: images.techInnovatorsGuild }, //
+  { id: 23, name: "Startup Founders", tags: ["Innovation", "Business"], logo: images.startupFounders },
+  { id: 24, name: "Open Source Contributors", tags: ["Open Source", "GitHub"], logo: images.openSourceContributors },
+  { id: 25, name: "AI Think Tank", tags: ["Artificial Intelligence", "Deep Learning"], logo: images.aiThinkTank },
+  { id: 26, name: "Grishaverse Fans", tags: ["Six of Crows", "Shadow and Bone", "Fantasy"], logo: images.grishaverseFans }, //
+  { id: 27, name: "Fourth Wing", tags: ["Fourth Wing", "Fantasy", "Young Adult"], logo: images.fourthWing }, //
+  { id: 28, name: "Potterheads", tags: ["Harry Potter", "Wizardry", "Fantasy"], logo: images.potterheads },
+  { id: 29, name: "Literature", tags: ["Fantasy", "Dystopia", "Literature"], logo: images.literature },
+  { id: 30, name: "Game Developers", tags: ["Game Dev", "Unity", "Unreal"], logo: images.gameDevelopers },
 ];
 
 const CommunityScreen = () => {
@@ -33,19 +46,34 @@ const CommunityScreen = () => {
   const cardPosition = new Animated.Value(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRequestSent, setIsRequestSent] = useState(false);
+  const [likeCount, setLikeCount] = useState(0); // Track likeCount with state
+  // let likeCount = 0;
 
   const handleLike = () => {
     // setIsRequestSent(true);
-
     // setTimeout(() => {
     //   setIsRequestSent(false);
     // }, 2000);
     // Alert.alert("Request Sent");
     // Show custom modal
-    setIsModalVisible(true);
-
     animateCard(true);
+    setIsModalVisible(true);
+    setLikeCount((prevLikeCount) => prevLikeCount + 1);
+    console.log(likeCount); // Logs the updated likeCount
   };
+
+  // const handleLikesUpdate = () => {
+  //   addNewPosts();
+  //   addNewNotifications();
+  //   addNewMessages();
+  // };
+
+  // useEffect(() => {
+  //   if (likeCount >= 5) {
+  //     handleLikesUpdate();
+  //     likeCount = 0; // Reset the counter
+  //   }
+  // }, [likeCount]);
 
   const handlePass = () => {
     animateCard(false);

@@ -1,17 +1,27 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
-import ChatScreen from "./chatscreen"; // Import the ChatScreen component
+import ChatScreen from "./chatscreen";  // Import the ChatScreen component
 
 const App = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const [isNewUser, setIsNewUser] = useState(true); // Add this state to check if user is new
 
   // Sample groups
   const groups = [
     { id: "1", name: "Tech Innovators Guild", message: "Don’t miss this opportunity guys!" },
     { id: "2", name: "Chess Club USC", message: "Need to warm up before the regional match!" },
     { id: "3", name: "Student Government Ass.", message: "Speaking of the showcase, just a heads up..." },
-    // More groups...
+    { id: "4", name: "R3D ONE", message: "Yo, practice tomorrow at 7 PM in the gym!" },
+    { id: "5", name: "Lens Masters Society", message: "Make sure your subject is complete..." },
+    { id: "6", name: "Photography Club", message: "Photo walk on Saturday, don't forget your gear!" },
+    { id: "7", name: "Music Band Collective", message: "Rehearsal at 5 PM today. Let's nail it!" },
+    { id: "8", name: "Debate Society", message: "Preparing for the national championship. Focus, team!" },
+    { id: "9", name: "Art Students Collective", message: "Art exhibition this weekend, be there!" },
+    { id: "10", name: "Dance Crew", message: "Practice starts at 6 PM sharp, everyone be there!" },
+    { id: "11", name: "Film Buffs Society", message: "Movie night at my place on Friday. Who’s in?" },
+    { id: "12", name: "Foodies Union", message: "Let's meet at the new cafe tomorrow for lunch!" },
+    { id: "13", name: "Environmental Club", message: "Meeting tomorrow at 3 PM, let's talk sustainability!" },
+    { id: "14", name: "Robotics Team", message: "Robotics competition this weekend! Stay sharp!" },
+    { id: "15", name: "Sports Enthusiasts", message: "Who’s up for a football game on Sunday?" },
   ];
 
   // Render group list
@@ -36,16 +46,10 @@ const App = () => {
       {!selectedGroup ? (
         <>
           <Text style={styles.chatHeader}>Messages</Text>
-          {isNewUser ? (
-            <View style={styles.emptyMessagesContainer}>
-              <Text style={styles.emptyMessagesText}>No messages yet</Text>
-            </View>
-          ) : (
-            <FlatList data={groups} renderItem={renderGroup} keyExtractor={(item) => item.id} />
-          )}
+          <FlatList data={groups} renderItem={renderGroup} keyExtractor={(item) => item.id} />
         </>
       ) : (
-        /* Chat Screen */
+        /* Pass the message of the selected group */
         <ChatScreen group={selectedGroup} onBack={() => setSelectedGroup(null)} />
       )}
     </View>
@@ -92,15 +96,6 @@ const styles = StyleSheet.create({
   chatGroupMessage: {
     color: "#888",
     marginTop: 3,
-  },
-  emptyMessagesContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyMessagesText: {
-    fontSize: 18,
-    color: "#888",
   },
 });
 

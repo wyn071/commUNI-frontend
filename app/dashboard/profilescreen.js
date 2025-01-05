@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import { useRouter } from 'expo-router'; // Import router for navigation
 import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
+import { Ionicons } from "@expo/vector-icons";
+
 import * as ImagePicker from 'expo-image-picker';
 
 // teddy = https://i.ibb.co/yN9ftfq/teddy-bear.jpg
@@ -11,7 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 export default function ProfileScreen() {
   const router = useRouter(); // Initialize the router
   const route = useRoute(); // Access the route object
-  const { userData, selectedInterests } = route.params || {}; // Extract userData and selectedInterests from route.params
+  const { userData, selectedInterests, newPost } = route.params || {}; // Extract userData and selectedInterests from route.params
   const parsedUserData = userData ? JSON.parse(userData) : {}; // Parse userData back to an object
 
   let processedInterests = selectedInterests;
@@ -29,6 +31,23 @@ export default function ProfileScreen() {
   const yearlevel = parsedUserData.yearlevel;
   const [profilePicture, setProfilePicture] = useState(parsedUserData.profilePicture || 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg');
   const [headerImage, setHeaderImage] = useState(parsedUserData.headerImage || 'https://i.ibb.co/2Yy9JM4/emptyheader.jpg');
+
+  const getRandomProfileImage = (id) => {
+    return `https://picsum.photos/seed/${id}/50`;
+  };
+  const handleLike = (id) => {
+    setPosts((prev) =>
+      prev.map((post) =>
+        newPost.id === id
+          ? {
+            ...newPost,
+            likedByUser: !post.likedByUser,
+            likes: post.likedByUser ? newPost.likes - 1 : newPost.likes + 1,
+          }
+          : newPost
+      )
+    );
+  };
 
   useEffect(() => {
     fetchUserImagesAndInterests();
@@ -181,7 +200,6 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      {/* Posts */}
       {/* <View style={styles.postsSection}>
         <View style={styles.postCard}>
           <View style={styles.postHeader}>
@@ -214,7 +232,8 @@ export default function ProfileScreen() {
             style={styles.postImage}
           />
         </View>
-      </View> */}
+      </View> 
+      */}
     </ScrollView>
   );
 }

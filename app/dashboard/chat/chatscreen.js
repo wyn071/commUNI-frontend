@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 
 const ChatScreen = ({ group, onBack }) => {
+    // Use the message from the group as the initial message
     const [messages, setMessages] = useState([
-        { id: "1", text: "Art exhibition this weekend, be there!", sender: "bot" },
+        { id: "1", text: group.message, sender: "bot" },
     ]);
     const [newMessage, setNewMessage] = useState("");
 

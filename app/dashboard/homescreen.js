@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import {
   View,
@@ -19,7 +17,7 @@ import { useRoute } from '@react-navigation/native';
 const HomeScreen = () => {
   const route = useRoute();
   const router = useRouter();
-  const { userData } = route.params || {};
+  const { userData, selectedInterests } = route.params || {};
   const parsedUserData = userData ? JSON.parse(userData) : {};
 
   const firstName = parsedUserData.firstName;
@@ -34,45 +32,46 @@ const HomeScreen = () => {
   console.log(parsedUserData.firstName);
 
   const [posts, setPosts] = useState([
-    // {
-    //   id: "1",
-    //   user: "AI Pioneers",
-    //   time: "15 mins ago",
-    //   content: "Excited to announce our upcoming webinar on Machine Learning trends in 2024! Join us to explore cutting-edge advancements and network with industry experts.",
-    //   image: "https://picsum.photos/400/200?random=1",
-    //   likes: 13,
-    //   comments: [],
-    //   likedByUser: false,  // Initialize likedByUser
-    // },
-    // {
-    //   id: "2",
-    //   user: "Tech Innovators Guild",
-    //   time: "1 hr ago",
-    //   content: "Our latest blog post dives into the future of web development. Discover the new frameworks and tools that will shape the industry in 2025.\n\nCheck out: https://www.techinnovators.com",
-    //   likes: 147,
-    //   comments: ["Can't wait!", "Good luck everyone!"],
-    //   likedByUser: false,  // Initialize likedByUser
-    // },
-    // {
-    //   id: "3",
-    //   user: "Fourth Wing Club",
-    //   time: "2 hours ago",
-    //   content: "Violet and Liam's letters",
-    //   image: "https://i.ibb.co/S5sRvTG/your-image.jpg",  // Correct image import
-    //   likes: 352,
-    //   comments: ["Sounds fun!", "I'm joining!"],
-    //   likedByUser: false,  // Initialize likedByUser
-    // },
+    {
+      id: "1",
+      user: "AI Pioneers",
+      time: "15 mins ago",
+      content: "Excited to announce our upcoming webinar on Machine Learning trends in 2024! Join us to explore cutting-edge advancements and network with industry experts.",
+      image: "https://picsum.photos/400/200?random=1",
+      likes: 13,
+      comments: [],
+      likedByUser: false,  // Initialize likedByUser
+    },
+    {
+      id: "2",
+      user: "Tech Innovators Guild",
+      time: "1 hr ago",
+      content: "Our latest blog post dives into the future of web development. Discover the new frameworks and tools that will shape the industry in 2025.\n\nCheck out: https://www.techinnovators.com",
+      likes: 147,
+      comments: ["Can't wait!", "Good luck everyone!"],
+      likedByUser: false,  // Initialize likedByUser
+    },
+    {
+      id: "3",
+      user: "Fourth Wing Club",
+      time: "2 hours ago",
+      content: "Violet and Liam's letters",
+      image: "https://i.ibb.co/S5sRvTG/your-image.jpg",  // Correct image import
+      likes: 352,
+      comments: ["Sounds fun!", "I'm joining!"],
+      likedByUser: false,  // Initialize likedByUser
+    },
   ]);
 
   const [newPost, setNewPost] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const handleNavigateToProfile = () => {
-    router.push({
-      pathname: '/profile',
-      params: { posts: posts }, // Pass the posts data
-    });
-  };
+
+  // const handleNavigateToProfile = () => {
+  //   router.push({
+  //     pathname: 'dashboard/profilescreen',
+  //     params: { newPost: newPostData, userData, selectedInterests }, // Pass the posts data
+  //   });
+  // };
 
 
   const pickImage = async () => {
@@ -102,23 +101,35 @@ const HomeScreen = () => {
   const handleAddPost = () => {
     if (newPost.trim() === "" && !selectedImage) return;
 
-    setPosts([
-      {
-        id: Date.now().toString(),
-        user: fullName,
-        time: "Just now",
-        content: newPost,
-        image: selectedImage,
-        likes: 0,
-        comments: [],
-        likedByUser: false, // Initialize likedByUser
-      },
-      ...posts,
-    ]);
+    // setPosts([
+    //   {
+    //     id: Date.now().toString(),
+    //     user: fullName,
+    //     time: "Just now",
+    //     content: newPost,
+    //     image: selectedImage,
+    //     likes: 0,
+    //     comments: [],
+    //     likedByUser: false, // Initialize likedByUser
+    //   },
+    //   ...posts,
+    // ]);
+    const newPostData = {
+      id: Date.now().toString(),
+      user: fullName,
+      time: "Just now",
+      content: newPost,
+      image: selectedImage,
+      likes: 0,
+      comments: [],
+      likedByUser: false,
+    };
+
+    setPosts([newPostData, ...posts]);
     setNewPost("");
     setSelectedImage(null);
 
-    handleNavigateToProfile();
+    // handleNavigateToProfile(newPostData);
 
   };
 
@@ -209,5 +220,40 @@ const HomeScreen = () => {
     </View>
   );
 };
-
+// export const addNewPosts = () => {
+//   console.log("AddNewPosts function triggered");
+//   const [posts, setPosts] = useState([]);
+//   const newPosts = [
+//     {
+//       id: "1",
+//       user: "AI Pioneers",
+//       time: "15 mins ago",
+//       content: "Excited to announce our upcoming webinar on Machine Learning trends in 2024! Join us to explore cutting-edge advancements and network with industry experts.",
+//       image: "https://picsum.photos/400/200?random=1",
+//       likes: 13,
+//       comments: [],
+//       likedByUser: false,  // Initialize likedByUser
+//     },
+//     {
+//       id: "2",
+//       user: "Tech Innovators Guild",
+//       time: "1 hr ago",
+//       content: "Our latest blog post dives into the future of web development. Discover the new frameworks and tools that will shape the industry in 2025.\n\nCheck out: https://www.techinnovators.com",
+//       likes: 147,
+//       comments: ["Can't wait!", "Good luck everyone!"],
+//       likedByUser: false,  // Initialize likedByUser
+//     },
+//     {
+//       id: "3",
+//       user: "Fourth Wing Club",
+//       time: "2 hours ago",
+//       content: "Violet and Liam's letters",
+//       image: "https://i.ibb.co/S5sRvTG/your-image.jpg",  // Correct image import
+//       likes: 352,
+//       comments: ["Sounds fun!", "I'm joining!"],
+//       likedByUser: false,  // Initialize likedByUser
+//     },
+//   ];
+//   setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+// };
 export default HomeScreen;

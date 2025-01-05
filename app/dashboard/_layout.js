@@ -32,7 +32,7 @@ const DashboardLayout = () => {
     console.log("UserData tehee: ", userData);
     router.push({
       pathname: '/dashboard/homescreen',
-      params: { userData },
+      params: { userData, selectedInterests },
     });
   };
 
