@@ -18,12 +18,14 @@ const styles = StyleSheet.create({
     },
     testTitle: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontFamily: "Poppins-SemiBold",
+        // fontWeight: 'bold',
         color: '#000000', // Black text
         textAlign: 'center',
     },
     testSubtitle: {
-        fontSize: 16,
+        fontSize: 14,
+        fontFamily: "Poppins-Regular",
         color: '#6b6b6b', // Grey text
         textAlign: 'center',
         marginTop: 16,
@@ -47,14 +49,17 @@ const styles = StyleSheet.create({
     },
     testButtonText: {
         fontSize: 16,
+        fontFamily: "Inter-SemiBold",
         color: '#ffffff', // White text for the primary button
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         textAlign: 'center',
     },
     testButtonTextSecondary: {
         fontSize: 16,
+        fontFamily: "Inter-SemiBold",
+
         color: '#000000', // Black text for the secondary button
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         textAlign: 'center',
     },
 });

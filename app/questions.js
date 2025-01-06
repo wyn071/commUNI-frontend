@@ -118,21 +118,21 @@ const QuestionsScreen = () => {
 
       <View style={styles.questionbuttonContainer}>
         <TouchableOpacity
-          style={styles.answerButton}
+          style={styles.agreeButton}
           onPress={() => handleAnswer(5)}
         >
           <Text style={styles.answerText}>Agree</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.answerButton}
+          style={styles.neutralButton}
           onPress={() => handleAnswer(3)}
         >
           <Text style={styles.answerText}>Neutral</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.answerButton}
+          style={styles.disagreeButton}
           onPress={() => handleAnswer(1)}
         >
           <Text style={styles.answerText}>Disagree</Text>

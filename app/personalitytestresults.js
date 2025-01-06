@@ -18,7 +18,7 @@ export default function PersonalityResultScreen() {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton}>
-                    <Text style={styles.backButtonText}>{"<"}</Text>
+                    <Text style={styles.backButtonText} onPress={() => router.back()}>{"<"}</Text>
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Your personality type is:</Text>
                 <Text style={styles.headerSubtitle}>Campaigner</Text>
@@ -53,7 +53,7 @@ export default function PersonalityResultScreen() {
                     <Text style={styles.buttonText}>Choose your interests</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, styles.secondaryButton]}>
-                    <Text style={[styles.buttonText, styles.secondaryButtonText]}>Start matching</Text>
+                    <Text style={[styles.buttonText, styles.secondaryButtonText]} onPress={() => router.navigate({ pathname: 'dashboard', params: { userData } })}>Find communities</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -77,44 +77,57 @@ const styles = StyleSheet.create({
         left: 15,
     },
     backButtonText: {
-        fontSize: 18,
+        fontFamily: "Poppins-Bold",
+        fontSize: 19,
         color: '#FFFFFF',
     },
     headerTitle: {
+        fontFamily: "Inter-Regular",
         color: '#FFFFFF',
         fontSize: 16,
         marginTop: 10,
     },
     headerSubtitle: {
+        fontFamily: "Poppins-Bold",
         color: '#FFFFFF',
         fontSize: 24,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         marginTop: 5,
     },
     personalityType: {
+        fontFamily: "Poppins-Bold",
         color: '#FFFFFF',
         fontSize: 18,
         marginTop: 5,
         fontWeight: '600',
     },
     content: {
-        padding: 15,
+        padding: 20,
+        flex: 1, // Ensure the content takes up available space
+
     },
     sectionTitle: {
+        fontFamily: "Poppins-Bold",
+
         fontSize: 16,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         marginTop: 10,
         marginBottom: 5,
     },
     description: {
+        fontFamily: "Inter-Regular",
+        textAlign: "justify",
         fontSize: 14,
         color: '#555',
         lineHeight: 20,
         marginBottom: 15,
+        paddingHorizontal: 5, // Add horizontal padding to prevent text cutoff
+
     },
     traitsContainer: {
         marginTop: 5,
         marginBottom: 35,
+        paddingHorizontal: 5
     },
     trait: {
         fontSize: 14,
@@ -134,17 +147,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     primaryButton: {
-        backgroundColor: '#000000',
+        backgroundColor: '#635EE2',
     },
     secondaryButton: {
         backgroundColor: 'transparent',
     },
     buttonText: {
+        fontFamily: "Inter-SemiBold",
         fontSize: 16,
         fontWeight: '600',
         color: '#FFFFFF',
     },
     secondaryButtonText: {
+        fontFamily: "Inter-Bold",
         color: '#000000',
     },
 });

@@ -20,16 +20,23 @@
       "supportsTablet": true
     },
     "android": {
+      "name": "CommUNI",
       "adaptiveIcon": {
         "foregroundImage": "./assets/communi-logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sheenocon.communifrontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router"
-    ]
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "935ab6eb-c4ed-42a4-9569-3f99db373f9c"
+      }
+    }
   }
 }

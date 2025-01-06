@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';  // Correct router
 import { useRoute } from '@react-navigation/native';  // Correct hook for accessing route params
 import styles from '../styles/startscreenstyles';  // Import your custom styles
+import Interests from './interests';
 
 const StartScreen = () => {
   const router = useRouter();
@@ -47,12 +48,20 @@ const StartScreen = () => {
           console.log(userData);
         }}
       >
-        <Text style={styles.testButtonText}>Take the Test</Text>
+        <Text style={styles.testButtonText}>Take the test</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.testButtonSecondary}
-        onPress={() => console.log('Skipped')}
+        onPress={() => {
+          // Pass userData to the next screen (Interests Screen)
+          router.navigate({
+            pathname: 'interests',  // The path to the interests screen
+            params: { userData },  // Pass userData as params
+          });
+          console.log("We have just passed data to the Interests screen cus we skipped the Personality Test. Here is what was passed: ");
+          console.log(userData);
+        }}
       >
         <Text style={styles.testButtonTextSecondary}>Skip</Text>
       </TouchableOpacity>

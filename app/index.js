@@ -1,12 +1,38 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router'; // Import useRouter for navigation
+import { useRouter, SplashScreen } from 'expo-router'; // Import useRouter for navigation
 import styles from '../styles/styles'; // Import styles
 import logo from '../assets/communi-logo.png'; // Path to logo file
+import { useFonts } from 'expo-font';
+
 
 const Index = () => {
   const router = useRouter(); // Initialize router
+
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+  const [loaded, error] = useFonts({
+    "Poppins-Bold": require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    "Poppins-Regular": require("../assets/fonts/Poppins/Poppins-Regular.ttf"),
+    "Poppins-SemiBold": require("../assets/fonts/Poppins/Poppins-SemiBold.ttf"),
+    "Inter-Bold": require("../assets/fonts/Inter/Inter-Bold.ttf"),
+    "Inter-Regular": require("../assets/fonts/Inter/Inter-Regular.ttf"),
+    "Inter-SemiBold": require("../assets/fonts/Inter/Inter-SemiBold.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
 
   return (
     <LinearGradient
@@ -40,7 +66,7 @@ const Index = () => {
         <View style={styles.buttonContainer}>
           {/* Create Account Button */}
           <TouchableOpacity
-            style={[styles.button, styles.createButton]}
+            style={[styles.button, styles.createButton,]}
             onPress={() => router.push('/register')} // Navigate to Register
           >
             <Text style={styles.buttonTextDark}>Create account</Text>

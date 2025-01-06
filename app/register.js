@@ -1,13 +1,37 @@
-import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useFonts } from 'expo-font';
+import { useRouter, SplashScreen } from 'expo-router';
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker'; // Import Picker for dropdowns
-
 import styles from '../styles/styles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 const Register = () => {
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+  const [loaded, error] = useFonts({
+    "Poppins-Bold": require("../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    "Poppins-Regular": require("../assets/fonts/Poppins/Poppins-Regular.ttf"),
+    "Poppins-SemiBold": require("../assets/fonts/Poppins/Poppins-SemiBold.ttf"),
+    "Inter-Bold": require("../assets/fonts/Inter/Inter-Bold.ttf"),
+    "Inter-Regular": require("../assets/fonts/Inter/Inter-Regular.ttf"),
+    "Inter-SemiBold": require("../assets/fonts/Inter/Inter-SemiBold.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+  if (!loaded && !error) {
+    return null;
+  }
+
+
   const [activeTab, setActiveTab] = useState('Student');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [firstName, setFirstName] = useState('');
@@ -146,7 +170,7 @@ const Register = () => {
         .post('https://communi-backend-db87843b2e3b.herokuapp.com/register', userData)
         .then((res) => {
           // console.log(res.data);
-          router.push({
+          router.navigate({
             pathname: 'startscreen',
             params: { userData: JSON.stringify(userData) },
           });
@@ -364,7 +388,7 @@ const Register = () => {
             Already have an account?{' '}
             <Text
               style={styles.registerfooterLink}
-              onPress={() => router.push('login')}
+              onPress={() => router.replace('login')}
             >
               Log in
             </Text>
@@ -379,6 +403,12 @@ const Register = () => {
       style={styles.registerScreenContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
     >
+      <View style={styles.headerContainer}></View>
+      <View style={styles.starstar}>
+        <Image source={require('../styles/Frame.png')} style={styles.loginLogo} />
+
+      </View>
+
       <Text style={styles.registerLogo}>CommUNI</Text>
 
       {/* Tab Switcher */}

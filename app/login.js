@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
-import { Link, useNavigation } from 'expo-router'; // Use Link for navigation
+import { useRouter, useNavigation } from 'expo-router'; // Use Link for navigation
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from '../styles/styles'; // Import your styles
 import axios from 'axios';
@@ -11,6 +11,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false); // Add loading state for login
   const navigation = useNavigation();
+  const router = useRouter();
+
 
   const handleLogin = () => {
     // Validation: Ensure email and password are not empty
@@ -146,9 +148,9 @@ const Login = () => {
       {/* Register Redirect */}
       <Text style={styles.loginFooterText}>
         Don’t have an account?{' '}
-        <Link href="/register" style={styles.loginFooterLink}>
+        <Text style={styles.loginFooterLink} onPress={() => router.replace('register')} >
           Sign up
-        </Link>
+        </Text>
       </Text>
     </KeyboardAvoidingView>
   );

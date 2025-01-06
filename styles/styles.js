@@ -33,23 +33,31 @@ const styles = StyleSheet.create({
   logo: {
     width: 250,
     height: 250,
-    marginBottom: 20,
+    marginBottom: 27,
   },
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 31,
+    fontFamily: "Poppins-Bold",
+    marginBottom: 8,
     color: '#000',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 17,
+    fontFamily: "Inter-Regular",
     textAlign: 'center',
     color: '#666',
     marginBottom: 50,
   },
+  starstar: {
+    width: 10, // Adjust size to match the sparkle in the image
+    height: 10,
+    alignSelf: "flex-end",
+    marginTop: 10,
+    marginRight: 45,
+  },
   buttonContainer: {
     width: '100%',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   button: {
     padding: 15,
@@ -66,15 +74,25 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#000',
   },
+  buttonPressed: {
+    backgroundColor: '#2E7D32', // Color when pressed
+  },
   buttonText: {
-    fontSize: 16,
+    fontFamily: "Inter-Semibold",
+    fontSize: 15,
     color: '#FFF',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   buttonTextDark: {
-    fontSize: 16,
+    fontFamily: "Inter-Semibold",
+    fontSize: 15,
     color: '#000',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+  },
+  headerContainer: {
+    flexDirection: 'row', // Place items horizontally
+    alignItems: 'center', // Vertically align items to the center
+    justifyContent: 'center', // Center everything horizontally
   },
   registerScreenContainer: {
     flex: 1,
@@ -82,19 +100,21 @@ const styles = StyleSheet.create({
   },
   registerContainer: {
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 25,
   },
   registerLogo: {
+    fontFamily: "Poppins-Bold",
     fontSize: 28,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 20,
+    marginTop: 15,
     color: '#000',
   },
   registerTabContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 10,
+    // marginTop: 2,
+    marginBottom: 20,
   },
   registertabButton: {
     flex: 1,
@@ -107,14 +127,17 @@ const styles = StyleSheet.create({
     borderBottomColor: '#000',
   },
   registertabText: {
+    fontFamily: "Poppins-Semiold",
     fontSize: 16,
     color: '#aaa',
   },
   registeractiveTabText: {
+    fontFamily: "Poppins-SemiBold",
     color: '#000',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   registerinputContainer: {
+    // fontFamily: "Inter-Regular",
     marginBottom: 15,
   },
   registerlabel: {
@@ -272,12 +295,14 @@ const styles = StyleSheet.create({
   },
   interestHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    alignContent: "center",
+    // marginBottom: 10,
   },
   interestBackArrow: {
-    fontSize: 20,
+    fontFamily: "Poppins-Bold",
+    fontSize: 22,
     color: '#333',
   },
   interestSkipButton: {
@@ -285,9 +310,13 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   interestTitle: {
+    flex: 1,
+    alignSelf: "center",
+    marginLeft: 95,
     marginTop: 10,
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: "Poppins-Bold",
+    // fontWeight: 'bold',
     color: '#333',
   },
   interestSubtitle: {
@@ -315,14 +344,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  // interestContinueButton: {
+  //   backgroundColor: 'black',
+  //   padding: 12,
+  //   borderRadius: 8,
+  //   alignItems: 'center',
+  //   marginTop: 16,
+  //   height: 50,
+  //   justifyContent: 'center'
+  // },
   interestContinueButton: {
-    backgroundColor: 'black',
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 16,
-    height: 50,
-    justifyContent: 'center'
+    marginBottom: 20,
+  },
+  activeContinueButton: {
+    backgroundColor: '#007BFF', // Blue color when active
+  },
+  inactiveContinueButton: {
+    backgroundColor: '#D3D3D3', // Gray color when inactive
   },
   interestContinueButtonText: {
     fontSize: 16,
@@ -337,8 +379,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   questionText: {
+    fontFamily: "Poppins-Bold",
     fontSize: 20,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 40,
   },
@@ -347,17 +390,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
   },
-  answerButton: {
+  agreeButton: {
+    backgroundColor: 'rgba(155, 198, 216, 0.7)', // Background with 70% opacity
+    padding: 15,
+    borderRadius: 10,
+    margin: 5,
+    // opacity: 0.7
+  },
+  neutralButton: {
     backgroundColor: '#efefef',
     padding: 15,
     borderRadius: 10,
     margin: 5,
   },
+  disagreeButton: {
+    backgroundColor: 'rgba(167, 80, 80, 0.9)', // Background with 90% opacity
+    padding: 15,
+    borderRadius: 10,
+    margin: 5,
+  },
   answerText: {
+    // fontFamily: "Inter-Regular",
     fontSize: 16,
     color: '#333',
   },
   questionCounter: {
+    fontFamily: "Poppins-Regular",
     fontSize: 14,
     marginTop: 20,
     color: '#666',
@@ -411,8 +469,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   submitButton: {
-    backgroundColor: '#007bff',  // Default background color
-    padding: 15,
+    backgroundColor: '#635EE2',  // Default background color
+    padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -420,9 +478,10 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   submitButtonText: {
+    fontFamily: "Inter-Bold",
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 17,
+    // fontWeight: 'bold',
 
   },
   // Container for the main dashboard screen

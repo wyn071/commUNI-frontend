@@ -30,8 +30,9 @@ const Interests = () => {
   const router = useRouter();
   const { userData } = route.params || {};
   const parsedUserData = userData ? JSON.parse(userData) : {};  // Parse userData back to an object
+  const personalityType = parsedUserData.mbtiType;
   console.log("nanako sa interests na screen");
-  console.log("Here is what was received: ", userData);
+  console.log("Here is what was received: ", userData, userData.mbtiType);
   console.log("We will be paring this received data.");
   console.log("Here is what the parsed data looks like: ", parsedUserData);
 
@@ -158,18 +159,25 @@ const Interests = () => {
     }
   };
 
+  const handleBackArrowSaInterests = () => {
+    if (!personalityType) {
+      router.back();
+    } else {
+      navigation.navigate('register');
+    }
+  };
 
   return (
     <View style={styles.interestContainer}>
       {/* Header with Back Arrow and Skip Button */}
       <View style={styles.interestHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('register')}>
+        <TouchableOpacity onPress={handleBackArrowSaInterests}>
           <Text style={styles.interestBackArrow}>{'<'}</Text>
         </TouchableOpacity>
         <Text style={styles.interestTitle}>Interests</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('dashboard')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('dashboard')}>
           <Text style={styles.interestSkipButton}>Skip</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Subtitle */}
@@ -201,9 +209,20 @@ const Interests = () => {
       </ScrollView>
 
       {/* Continue Button */}
-      <TouchableOpacity style={styles.interestContinueButton} onPress={handleContinue}>
+      {/* <TouchableOpacity style={styles.interestContinueButton} onPress={handleContinue}>
+        <Text style={styles.interestContinueButtonText}>Continue</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        style={[
+          styles.interestContinueButton,
+          selectedInterests.length > 0 || !personalityType ? styles.activeContinueButton : styles.inactiveContinueButton,
+        ]}
+        onPress={handleContinue}
+        disabled={selectedInterests.length === 0} // Disable the button if no interests are selected
+      >
         <Text style={styles.interestContinueButtonText}>Continue</Text>
       </TouchableOpacity>
+
     </View>
   );
 };
