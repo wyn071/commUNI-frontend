@@ -31,6 +31,8 @@ export default function ProfileScreen() {
   const [headerImage, setHeaderImage] = useState(parsedUserData.headerImage || 'https://i.ibb.co/2Yy9JM4/emptyheader.jpg');
 
   const [posts, setPosts] = useState([]);
+  const [activeTab, setActiveTab] = useState('posts'); // Track active tab
+  const [mediaItems, setMediaItems] = useState([]); // To store all media
 
 
   const getRandomProfileImage = (id) => {
@@ -120,6 +122,10 @@ export default function ProfileScreen() {
   const handleLogout = () => {
     console.log('Logging out...');
     router.replace('/login');
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
   };
 
   const pickImage = async (setImage) => {
@@ -221,87 +227,86 @@ export default function ProfileScreen() {
             </View>
 
             {/* Tabs */}
-            <View style={styles.tabsContainer}>
+            {/* <View style={styles.tabsContainer}>
               <Text style={[styles.tabText, styles.activeTab]}>Posts</Text>
               <Text style={styles.tabText}>Media</Text>
+            </View> */}
+
+            <View style={styles.tabsContainer}>
+              <TouchableOpacity onPress={() => handleTabChange('posts')}>
+                <Text style={[styles.tabText, activeTab === 'posts' && styles.activeTab]}>Posts</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleTabChange('media')}>
+                <Text style={[styles.tabText, activeTab === 'media' && styles.activeTab]}>Media</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </>
       }
 
-      data={posts}
+      data={activeTab === 'posts' ? posts : []}  // Only show posts when 'Posts' tab is active
       renderItem={({ item }) => {
-        return (
-          <View style={styles.postCard}>
-            <View style={styles.postHeader}>
-              <Image
-                source={{ uri: myProfileImage }}
-                style={styles.postAvatar}
-              />
-              <View style={styles.postHeaderText}>
-                <Text style={styles.postTitle}>{fullName}</Text>
-                <Text style={styles.postTime}>
-                  {item.time
-                    ? formatDistanceToNow(new Date(item.time), { addSuffix: true })
-                    : 'Unknown time'}
-                </Text>
+        if (activeTab === 'posts') {
+          return (
+            <View style={styles.postCard}>
+              <View style={styles.postHeader}>
+                <Image
+                  source={{ uri: myProfileImage }}
+                  style={styles.postAvatar}
+                />
+                <View style={styles.postHeaderText}>
+                  <Text style={styles.postTitle}>{fullName}</Text>
+                  <Text style={styles.postTime}>
+                    {item.time
+                      ? formatDistanceToNow(new Date(item.time), { addSuffix: true })
+                      : 'Unknown time'}
+                  </Text>
+                </View>
+              </View>
+
+              <Text style={styles.postTitle}>{item.title}</Text>
+              <Text style={styles.postContent}>{item.content}</Text>
+
+              {item.image && (
+                <Image source={{ uri: item.image }} style={styles.postImage} />
+              )}
+
+              <View>
+                <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
+                  <Ionicons
+                    name={item.likedByUser ? "heart" : "heart-outline"}
+                    size={20}
+                    color="red"
+                    accessibilityLabel="Like button"
+                  />
+                  <Text style={styles.likeText}>{item.likes} Likes</Text>
+                </TouchableOpacity>
               </View>
             </View>
+          );
+        }
 
-            <Text style={styles.postTitle}>{item.title}</Text>
-            <Text style={styles.postContent}>{item.content}</Text>
-
-            {item.image && (
-              <Image source={{ uri: item.image }} style={styles.postImage} />
-            )}
-
-            <View>
-              <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
-                <Ionicons
-                  name={item.likedByUser ? "heart" : "heart-outline"}
-                  size={20}
-                  color="red"
-                  accessibilityLabel="Like button"
-                />
-                <Text style={styles.likeText}>{item.likes} Likes</Text>
-              </TouchableOpacity>
+        if (activeTab === 'media') {
+          // Show the user's media
+          return (
+            <View style={styles.mediaContainer}>
+              {/* Profile Image */}
+              {profilePicture !== 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg' && (
+                <Image source={{ uri: profilePicture }} style={styles.mediaImage} />
+              )}
+              {/* Header Image */}
+              {headerImage !== 'https://i.ibb.co/2Yy9JM4/emptyheader.jpg' && (
+                <Image source={{ uri: headerImage }} style={styles.mediaImage} />
+              )}
+              {/* Posted Images */}
+              {item.image && (
+                <Image source={{ uri: item.image }} style={styles.mediaImage} />
+              )}
             </View>
-          </View>
-        );
+          );
+        }
       }}
-      // renderItem={({ item }) => (
-      //   <View style={styles.postCard}>
-      //     <View style={styles.postHeader}>
-      //       <Image
-      //         source={{ uri: myProfileImage }}
-      //         style={styles.postAvatar}
-      //       />
-      //       <View style={styles.postHeaderText}>
-      //         <Text style={styles.postTitle}>{fullName}</Text>
-      //         <Text style={styles.postTime}>Just now</Text>
-      //       </View>
-      //     </View>
 
-      //     <Text style={styles.postTitle}>{item.title}</Text>
-      //     <Text style={styles.postContent}>{item.content}</Text>
-
-      //     {item.image && (
-      //       <Image source={{ uri: item.image }} style={styles.postImage} />
-      //     )}
-
-      //     <View>
-      //       <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
-      //         <Ionicons
-      //           name={item.likedByUser ? "heart" : "heart-outline"}
-      //           size={20}
-      //           color="red"
-      //           accessibilityLabel="Like button"
-      //         />
-      //         <Text style={styles.likeText}>{item.likes} Likes</Text>
-      //       </TouchableOpacity>
-      //     </View>
-      //   </View>
-      // )}
       keyExtractor={(item, index) => index.toString()}
     />
   );
