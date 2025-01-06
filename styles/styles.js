@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
   },
   postActions: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-around",              //
   },
   actionButton: {
     flexDirection: "row",

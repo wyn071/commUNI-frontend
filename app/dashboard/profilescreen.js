@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, 
 import { useRouter } from 'expo-router'; // Import router for navigation
 import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 
 
@@ -92,6 +93,8 @@ export default function ProfileScreen() {
       Alert.alert('Error', 'An error occurred while fetching user data.');
     }
   };
+
+  const myProfileImage = profilePicture;
 
   // Fetch user posts from the backend
   const fetchUserPosts = async () => {
@@ -226,11 +229,71 @@ export default function ProfileScreen() {
         </>
       }
 
+      // data={posts}
+      // renderItem={({ item }) => (
+      //   <View style={styles.postCard}>
+      //     <View style={styles.postHeader}>
+      //       <Image
+      //         source={{ uri: myProfileImage }}
+      //         style={styles.postAvatar}
+      //       />
+      //       <View>
+      //         <Text style={styles.postTitle}>{fullName}</Text>
+      //       </View>
+      //     </View>
+      //     <Text style={styles.postTitle}>{item.title}</Text>
+      //     <Text style={styles.postContent}>{item.content}</Text>
+
+      //     {item.image && (
+      //       <Image source={{ uri: item.image }} style={styles.postImage} />
+      //     )}
+      //     <View style={styles.postActions}>
+      //       <TouchableOpacity onPress={() => handleLike(item.id)}>
+      //         <Ionicons
+      //           name={item.likedByUser ? "heart" : "heart-outline"}
+      //           size={20}
+      //           color="red"
+      //           accessibilityLabel="Like button"
+      //         />
+      //         <Text>{item.likes} Likes</Text>
+      //       </TouchableOpacity>
+      //     </View>
+      //   </View>
+      // )}
+      // keyExtractor={(item, index) => index.toString()}
+
       data={posts}
       renderItem={({ item }) => (
         <View style={styles.postCard}>
+          <View style={styles.postHeader}>
+            <Image
+              source={{ uri: myProfileImage }}
+              style={styles.postAvatar}
+            />
+            <View style={styles.postHeaderText}>
+              <Text style={styles.postTitle}>{fullName}</Text>
+              <Text style={styles.postTime}>Just now</Text>
+            </View>
+          </View>
+
           <Text style={styles.postTitle}>{item.title}</Text>
           <Text style={styles.postContent}>{item.content}</Text>
+
+          {item.image && (
+            <Image source={{ uri: item.image }} style={styles.postImage} />
+          )}
+
+          <View>
+            <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
+              <Ionicons
+                name={item.likedByUser ? "heart" : "heart-outline"}
+                size={20}
+                color="red"
+                accessibilityLabel="Like button"
+              />
+              <Text style={styles.likeText}>{item.likes} Likes</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
       keyExtractor={(item, index) => index.toString()}
@@ -239,11 +302,18 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  // postImage: {
+  //   width: '100%', // Make the image take the full width of the post
+  //   height: 250,   // Set the height of the image                                 //
+  //   borderRadius: 10, // Optional: Adds rounded corners
+  //   marginTop: 10,    // Adds spacing between the text and the image
+  // },
   postImage: {
     width: '100%', // Make the image take the full width of the post
     height: 250,   // Set the height of the image
     borderRadius: 10, // Optional: Adds rounded corners
     marginTop: 10,    // Adds spacing between the text and the image
+    marginBottom: 10, // Adds bottom margin for spacing below the image
   },
 
   container: {
@@ -365,40 +435,87 @@ const styles = StyleSheet.create({
     borderColor: '#333',
     paddingBottom: 5,
   },
+  likeText: {
+    fontSize: 14,
+    color: '#333', // Text color for likes
+    marginLeft: 5, // Adds spacing between icon and text
+  },
   postsSection: {
     backgroundColor: '#fff',
     marginTop: 10,
     paddingHorizontal: 10,
   },
+  // postCard: {
+  //   backgroundColor: '#fff',
+  //   borderRadius: 10,
+  //   padding: 15,                                        //
+  //   elevation: 2,
+  //   marginBottom: 10,
+  // },
+  // postCard: {
+  //   backgroundColor: '#fff',
+  //   borderRadius: 10,
+  //   padding: 15,
+  //   elevation: 2,
+  //   marginBottom: 15, // Increased bottom margin for spacing between posts
+  // },
   postCard: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
+    margin: 10,
+    padding: 10,
     borderRadius: 10,
-    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 2,
-    marginBottom: 10,
   },
+  // postHeader: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',                               //
+  //   // marginBottom: 1,
+  // },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 10, // Adds spacing between the header and the content
+  },
+  postHeaderText: {
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   postAvatar: {
     width: 40,
-    height: 40,
+    height: 40,                                          //
     borderRadius: 20,
     marginRight: 10,
   },
+  // postTitle: {
+  //   fontSize: 14,
+  //   fontWeight: 'bold',                                //
+  // },
   postTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#333', // Adds color for the title
+  },
+  postTime: {
+    fontSize: 12,
+    color: '#888', // Lighter color for time (subtle)
+    marginTop: 3, // Small space between the name and time
   },
   postSubtitle: {
     fontSize: 12,
     color: '#888',
   },
+  // postContent: {
+  //   fontSize: 14,
+  //   color: '#333',                                       //
+  // },
   postContent: {
     fontSize: 14,
     color: '#333',
+    marginBottom: 10, // Adds spacing below the content
   },
 });
 
