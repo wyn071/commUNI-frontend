@@ -14,4 +14,12 @@ export default {
     blockchainBuilders: require('./blockchain_builders.png'),
     gameDevelopers: require('./game_developers.png'),
     literature: require('./literature.png'),
+    creativeWritingClub: require('./creativeWritingClub.jpg'),
+    meditationClub: require('./meditationClub.jpg'),
+    culturalExchange: require('./culturalExchange.jpg'),
+    cybersecurityWarriors: require('./cybersecurityWarriors.jpg'),
+    climateAction: require('./climateAction.jpg'),
+    selfDevelopment: require('./selfDevelopment.jpg'),
+    slamPoetry: require('./slamPoetry.png'),
+
 };

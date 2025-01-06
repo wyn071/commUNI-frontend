@@ -9,19 +9,26 @@ import { useRouter } from 'expo-router';
 
 
 const interestList = [
-  '‘90s kid', 'Harry Potter', 'AI', 'Fiction', 'Self-care', 'Heavy metal',
-  'House parties', 'Gin & tonic', 'Gymnastics', 'Ludo', 'Maggi', 'Hot yoga',
-  'Literature', 'Meditation', 'Sushi', 'Spotify', 'Dystopia', 'Basketball',
-  'Slam poetry', 'Home workouts', 'Theatre', 'Café hopping', 'Trainers',
-  'Cybersecurity', 'Instagram', 'Fantasy', 'Walking', 'Running', 'Travel',
-  'Language exchange', 'Films', 'Guitarists', 'Social development', 'Gym',
-  'Young Adult', 'Hip hop', 'Skincare', 'J-Pop', 'Data Science', 'Cloud Computing',
-  'Freelance', 'K-Pop', 'Skateboarding', 'Gospel', 'Potterhead',
-  'Innovation', 'Photography', 'Bollywood', 'Bhangra', 'Reading',
-  'Singing', 'Sports', 'Poetry', 'Stand-up comedy', 'Coffee', 'Karaoke',
-  'Fortnite', 'Free diving', 'Self-development', 'Mental health awareness',
-  'Foodie tour', 'Voter rights', 'Jiu-jitsu', 'Climate change'
+  'AI', 'Cybersecurity', 'Data Science', 'Cloud Computing', 'Innovation',
+  'Photography', 'Sports', 'Basketball', 'Skateboarding', 'Gymnastics',
+  'Jiu-jitsu', 'Free diving', 'Running', 'Walking', 'Home workouts',
+  'Gym', 'Mental health awareness', 'Self-care', 'Meditation', 'Skincare',
+  'Self-development', 'Social development', 'Climate change', 'Voter rights',
+  'Slam poetry', 'Poetry', 'Stand-up comedy', 'Guitarists', 'Singing',
+  'Fortnite', 'Instagram', 'Spotify', 'TikTok', 'Theatre', 'Films',
+  'Young Adult', 'Fantasy', 'Fiction', 'Literature', 'Reading', 'Harry Potter',
+  'Potterhead', 'Dystopia', '90s kid', 'Travel', 'Language exchange',
+  'Foodie tour', 'Café hopping', 'Gin & tonic', 'Sushi', 'Maggi',
+  'Bollywood', 'Bhangra', 'Hip hop', 'K-Pop', 'J-Pop', 'Gospel',
+  'Social justice', 'Social activism', 'Innovation', 'Tech startups',
+  'Environmental science', 'Urban planning', 'Philosophy', 'Science fiction',
+  'Youth empowerment', 'Community service', 'Political science', 'Civic engagement',
+  'Health & wellness', 'Food science', 'Culinary arts', 'Cooking', 'Nutrition',
+  'Sustainable living', 'Technology', 'Engineering', 'Architecture', 'Mathematics',
+  'Physics', 'Chemistry', 'Physics education', 'Science education', 'STEM education',
+  'Entrepreneurship', 'Freelance', 'Digital media', 'Photography', 'Creative arts'
 ];
+
 
 const Interests = () => {
   const navigation = useNavigation();
