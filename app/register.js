@@ -141,7 +141,7 @@ const Register = () => {
       program: selectedProgram,
       department: selectedDepartment,
       birthday: birthdayFormatted,
-      yearlevel: selectedYearLevel
+      yearlevel: selectedYearLevel,
     };
 
     // console.log('Sending data:', userData);
