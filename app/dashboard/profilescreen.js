@@ -2,19 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import { useRouter } from 'expo-router'; // Import router for navigation
 import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
-import { Ionicons } from "@expo/vector-icons";
-
+import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 
-// teddy = https://i.ibb.co/yN9ftfq/teddy-bear.jpg
-// grey = https://i.ibb.co/2Yy9JM4/your-image.jpg
-// emptypfp = https://i.ibb.co/x1DvXZN/empty-pfp.jpg
 
 export default function ProfileScreen() {
-  const router = useRouter(); // Initialize the router
-  const route = useRoute(); // Access the route object
-  const { userData, selectedInterests, newPost } = route.params || {}; // Extract userData and selectedInterests from route.params
-  const parsedUserData = userData ? JSON.parse(userData) : {}; // Parse userData back to an object
+  const router = useRouter();
+  const route = useRoute();
+  const { userData, selectedInterests, newPost } = route.params || {};
+  const parsedUserData = userData ? JSON.parse(userData) : {};
 
   let processedInterests = selectedInterests;
 
@@ -31,6 +27,9 @@ export default function ProfileScreen() {
   const yearlevel = parsedUserData.yearlevel;
   const [profilePicture, setProfilePicture] = useState(parsedUserData.profilePicture || 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg');
   const [headerImage, setHeaderImage] = useState(parsedUserData.headerImage || 'https://i.ibb.co/2Yy9JM4/emptyheader.jpg');
+
+  const [posts, setPosts] = useState([]);
+
 
   const getRandomProfileImage = (id) => {
     return `https://picsum.photos/seed/${id}/50`;
@@ -51,16 +50,22 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     fetchUserImagesAndInterests();
-    // Check if selectedInterests is a string and convert it to an array
     if (typeof selectedInterests === 'string') {
       setInterestsArray(selectedInterests.split(','));
     } else {
       setInterestsArray(selectedInterests || []);
     }
-  }, [selectedInterests]); // Only rerun when selectedInterests changes
+  }, [selectedInterests]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserPosts();
+    }, [userData.email])
+  );
 
   const fetchUserImagesAndInterests = async () => {
+    fetchUserPosts();
+
     try {
       const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/get-user-data', {
         method: 'POST',
@@ -87,10 +92,31 @@ export default function ProfileScreen() {
       Alert.alert('Error', 'An error occurred while fetching user data.');
     }
   };
+
+  // Fetch user posts from the backend
+  const fetchUserPosts = async () => {
+    try {
+      const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/get-user-posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: parsedUserData.email }),
+      });
+
+      const data = await response.json();
+      if (data.status === 'ok') {
+        setPosts(data.posts); // Assuming the posts are returned as an array
+      } else {
+        console.log('Error fetching posts');
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      Alert.alert('Error', 'An error occurred while fetching posts.');
+    }
+  };
+
   const handleLogout = () => {
-    // Logic for logging out can go here, such as clearing tokens or state
     console.log('Logging out...');
-    router.replace('/login'); // Navigate to the login screen
+    router.replace('/login');
   };
 
   const pickImage = async (setImage) => {
@@ -102,7 +128,7 @@ export default function ProfileScreen() {
     });
 
     if (!result.canceled) {
-      setImage(result.uri); // Update the image state with the selected URI
+      setImage(result.uri);
     }
   };
 
@@ -130,111 +156,85 @@ export default function ProfileScreen() {
       alert("An error occurred while saving your images.");
     }
   };
+
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Image source={{ uri: headerImage }} style={styles.headerImage} />
-
-      </View>
-
-      {/* Profile Section */}
-      <View style={styles.profileSection}>
-
-        <Image source={{ uri: profilePicture }} style={styles.profileImage} />
-
-        <Text style={styles.name}>{fullName}</Text>
-        <Text style={styles.bio}>
-          {program}{"\n"}{department}{"\n"}{yearlevel}
-        </Text>
-        <Text style={styles.communities}>0 communities joined</Text>
-
-        {/* Followers and Following */}
-        <View style={styles.followSection}>
-          <View style={styles.followBox}>
-            <Text style={styles.followNumber}>0</Text>
-            <Text style={styles.followLabel}>Followers</Text>
+    <FlatList
+      ListHeaderComponent={
+        <>
+          {/* Header */}
+          <View style={styles.header}>
+            <Image source={{ uri: headerImage }} style={styles.headerImage} />
           </View>
-          <View style={styles.followBox}>
-            <Text style={styles.followNumber}>0</Text>
-            <Text style={styles.followLabel}>Following</Text>
-          </View>
-        </View>
 
-        {/* Interests */}
-        <View style={styles.tagsContainer}>
-          {interestsArray.map((selectedInterests, index) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{selectedInterests}</Text>
+          {/* Profile Section */}
+          <View style={styles.profileSection}>
+            <Image source={{ uri: profilePicture }} style={styles.profileImage} />
+            <Text style={styles.name}>{fullName}</Text>
+            <Text style={styles.bio}>
+              {program}{"\n"}{department}{"\n"}{yearlevel}
+            </Text>
+            <Text style={styles.communities}>0 communities joined</Text>
+
+            {/* Followers and Following */}
+            <View style={styles.followSection}>
+              <View style={styles.followBox}>
+                <Text style={styles.followNumber}>0</Text>
+                <Text style={styles.followLabel}>Followers</Text>
+              </View>
+              <View style={styles.followBox}>
+                <Text style={styles.followNumber}>0</Text>
+                <Text style={styles.followLabel}>Following</Text>
+              </View>
             </View>
-          ))}
-        </View>
 
-        {/* Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() =>
-              router.push({
-                pathname: '/editprofilescreen', // Navigate to edit profile screen
-                params: { userData, selectedInterests },
-              })
-            }
-          >
-            <Text style={styles.buttonText}>Edit Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Settings</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Log Out</Text>
-          </TouchableOpacity>
-        </View>
+            {/* Interests */}
+            <View style={styles.tagsContainer}>
+              {interestsArray.map((selectedInterests, index) => (
+                <View key={index} style={styles.tag}>
+                  <Text style={styles.tagText}>{selectedInterests}</Text>
+                </View>
+              ))}
+            </View>
 
-        {/* Tabs */}
-        <View style={styles.tabsContainer}>
-          <Text style={[styles.tabText, styles.activeTab]}>Posts</Text>
-          <Text style={styles.tabText}>Reposts</Text>
-          <Text style={styles.tabText}>Replies</Text>
-          <Text style={styles.tabText}>Media</Text>
-        </View>
-      </View>
+            {/* Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() =>
+                  router.push({
+                    pathname: '/editprofilescreen',
+                    params: { userData, selectedInterests },
+                  })
+                }
+              >
+                <Text style={styles.buttonText}>Edit Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Settings</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={handleLogout}>
+                <Text style={styles.buttonText}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
 
-      {/* <View style={styles.postsSection}>
+            {/* Tabs */}
+            <View style={styles.tabsContainer}>
+              <Text style={[styles.tabText, styles.activeTab]}>Posts</Text>
+              <Text style={styles.tabText}>Media</Text>
+            </View>
+          </View>
+        </>
+      }
+
+      data={posts}
+      renderItem={({ item }) => (
         <View style={styles.postCard}>
-          <View style={styles.postHeader}>
-            <Image
-              source={{ uri: 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg' }}
-              style={styles.postAvatar}
-            />
-            <View>
-              <Text style={styles.postTitle}>{fullName}</Text>
-              <Text style={styles.postSubtitle}>{fullName} · {yearlevel} · {program} · Just now</Text>
-            </View>
-          </View>
-          <Text style={styles.postContent}>Test</Text>
+          <Text style={styles.postTitle}>{item.title}</Text>
+          <Text style={styles.postContent}>{item.content}</Text>
         </View>
-
-        <View style={styles.postCard}>
-          <View style={styles.postHeader}>
-            <Image
-              source={{ uri: 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg' }}
-              style={styles.postAvatar}
-            />
-            <View>
-              <Text style={styles.postTitle}>{fullName}</Text>
-              <Text style={styles.postSubtitle}>{fullName} · {yearlevel} · {program} · Just now</Text>
-            </View>
-          </View>
-          <Text style={styles.postContent}>Test</Text>
-          <Image
-            source={{ uri: 'https://i.ibb.co/yN9ftfq/teddy-bear.jpg' }}
-            style={styles.postImage}
-          />
-        </View>
-      </View> 
-      */}
-    </ScrollView>
+      )}
+      keyExtractor={(item, index) => index.toString()}
+    />
   );
 }
 

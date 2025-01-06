@@ -9,8 +9,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../../styles/styles"; // Adjust this path to your stylesheet
-import viandli from "../../assets/viandli.png"; // Correct image path
+import styles from "../../styles/styles";
 import { useRouter } from 'expo-router';
 import { useRoute } from '@react-navigation/native';
 
@@ -19,16 +18,15 @@ const HomeScreen = () => {
   const router = useRouter();
   const { userData, selectedInterests } = route.params || {};
   const parsedUserData = userData ? JSON.parse(userData) : {};
-
   const firstName = parsedUserData.firstName;
   const lastName = parsedUserData.lastName;
   const fullName = `${firstName} ${lastName}`;
   const yearlevel = parsedUserData.yearlevel;
   const [profilePicture, setProfilePicture] = useState(parsedUserData.profilePicture || 'https://i.ibb.co/x1DvXZN/empty-pfp.jpg');
 
-  console.log('userData:', userData);  // Check if userData is properly passed
+  console.log('userData:', userData);
   console.log('parsedUserData:', parsedUserData);
-  console.log(firstName); // Check final fullName
+  console.log(firstName);
   console.log(parsedUserData.firstName);
 
   const [posts, setPosts] = useState([
@@ -64,15 +62,8 @@ const HomeScreen = () => {
   ]);
 
   const [newPost, setNewPost] = useState("");
+
   const [selectedImage, setSelectedImage] = useState(null);
-
-  // const handleNavigateToProfile = () => {
-  //   router.push({
-  //     pathname: 'dashboard/profilescreen',
-  //     params: { newPost: newPostData, userData, selectedInterests }, // Pass the posts data
-  //   });
-  // };
-
 
   const pickImage = async () => {
     try {
@@ -98,26 +89,29 @@ const HomeScreen = () => {
     }
   };
 
-  const handleAddPost = () => {
+  // const handleAddPost = () => {
+  //   if (newPost.trim() === "" && !selectedImage) return;
+  //   const newPostData = {
+  //     id: Date.now().toString(),
+  //     user: fullName,
+  //     time: "Just now",
+  //     content: newPost,
+  //     image: selectedImage,
+  //     likes: 0,
+  //     comments: [],
+  //     likedByUser: false,
+  //   };
+  //   setPosts([newPostData, ...posts]);
+  //   setNewPost("");
+  //   setSelectedImage(null);
+  // };
+
+  const handleAddPost = async () => {
     if (newPost.trim() === "" && !selectedImage) return;
 
-    // setPosts([
-    //   {
-    //     id: Date.now().toString(),
-    //     user: fullName,
-    //     time: "Just now",
-    //     content: newPost,
-    //     image: selectedImage,
-    //     likes: 0,
-    //     comments: [],
-    //     likedByUser: false, // Initialize likedByUser
-    //   },
-    //   ...posts,
-    // ]);
     const newPostData = {
-      id: Date.now().toString(),
+      id: Date.now().toString(),  // This ensures a unique id
       user: fullName,
-      time: "Just now",
       content: newPost,
       image: selectedImage,
       likes: 0,
@@ -125,12 +119,33 @@ const HomeScreen = () => {
       likedByUser: false,
     };
 
-    setPosts([newPostData, ...posts]);
-    setNewPost("");
-    setSelectedImage(null);
+    // Save the post to the backend database
+    try {
+      const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/savePost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userEmail: parsedUserData.email, // Assuming userEmail is used for identification
+          post: newPostData,
+        }),
+      });
 
-    // handleNavigateToProfile(newPostData);
+      if (response.ok) {
+        // Successfully saved the post to the database
+        // Optionally fetch the updated posts here (if needed)
 
+        // Update the local state (or you can directly fetch the posts again)
+        setPosts([newPostData, ...posts]);
+        setNewPost("");
+        setSelectedImage(null);
+      } else {
+        console.error("Error saving post:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving post:", error);
+    }
   };
 
   const handleLike = (id) => {
@@ -147,13 +162,10 @@ const HomeScreen = () => {
     );
   };
 
-  // Function to get a random profile picture for each post
   const getRandomProfileImage = (id) => {
     return `https://picsum.photos/seed/${id}/50`;
   };
 
-  // Set your own profile picture URL
-  // const myProfileImage = "https://i.ibb.co/4t3GT4L/your-image.jpg";
   const myProfileImage = profilePicture;
 
   return (
@@ -162,7 +174,6 @@ const HomeScreen = () => {
       <View style={styles.homeheader}>
         <Image source={require('../../assets/communi-styled.png')} style={styles.communilogo}></Image>
       </View>
-      {/* Post Input Container */}
       <View style={styles.postInputContainer}>
         <Image
           source={{ uri: myProfileImage }}
@@ -192,10 +203,8 @@ const HomeScreen = () => {
         renderItem={({ item }) => (
           <View style={styles.postCard}>
             <View style={styles.postHeader}>
-              {/* Display your profile picture for your posts, random image for others */}
               <Image
                 source={{ uri: item.user === fullName ? myProfileImage : getRandomProfileImage(item.id) }}
-                // source={{ uri: item.user === "You" ? myProfileImage : myProfileImage }}
                 style={styles.postAvatar}
               />
               <View>
@@ -224,40 +233,5 @@ const HomeScreen = () => {
     </View>
   );
 };
-// export const addNewPosts = () => {
-//   console.log("AddNewPosts function triggered");
-//   const [posts, setPosts] = useState([]);
-//   const newPosts = [
-//     {
-//       id: "1",
-//       user: "AI Pioneers",
-//       time: "15 mins ago",
-//       content: "Excited to announce our upcoming webinar on Machine Learning trends in 2024! Join us to explore cutting-edge advancements and network with industry experts.",
-//       image: "https://picsum.photos/400/200?random=1",
-//       likes: 13,
-//       comments: [],
-//       likedByUser: false,  // Initialize likedByUser
-//     },
-//     {
-//       id: "2",
-//       user: "Tech Innovators Guild",
-//       time: "1 hr ago",
-//       content: "Our latest blog post dives into the future of web development. Discover the new frameworks and tools that will shape the industry in 2025.\n\nCheck out: https://www.techinnovators.com",
-//       likes: 147,
-//       comments: ["Can't wait!", "Good luck everyone!"],
-//       likedByUser: false,  // Initialize likedByUser
-//     },
-//     {
-//       id: "3",
-//       user: "Fourth Wing Club",
-//       time: "2 hours ago",
-//       content: "Violet and Liam's letters",
-//       image: "https://i.ibb.co/S5sRvTG/your-image.jpg",  // Correct image import
-//       likes: 352,
-//       comments: ["Sounds fun!", "I'm joining!"],
-//       likedByUser: false,  // Initialize likedByUser
-//     },
-//   ];
-//   setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-// };
+
 export default HomeScreen;
