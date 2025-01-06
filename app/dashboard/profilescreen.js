@@ -231,15 +231,14 @@ export default function ProfileScreen() {
               <Text style={[styles.tabText, styles.activeTab]}>Posts</Text>
               <Text style={styles.tabText}>Media</Text>
             </View> */}
-
-            <View style={styles.tabsContainer}>
+            {/* <View style={styles.tabsContainer}>
               <TouchableOpacity onPress={() => handleTabChange('posts')}>
                 <Text style={[styles.tabText, activeTab === 'posts' && styles.activeTab]}>Posts</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleTabChange('media')}>
                 <Text style={[styles.tabText, activeTab === 'media' && styles.activeTab]}>Media</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </>
       }
