@@ -530,17 +530,25 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20
   },
-
   // Home screen container (with posts)
   homeContainer: {
     flex: 1,
     backgroundColor: "#f8f9fa",
-    paddingTop: "30",
+    // paddingTop: "30",
+  },
+  homeheader: {
+    backgroundColor: "#ffffff",
+    paddingVertical: 15,
+    alignItems: "center"
+  },
+  communilogo: {
+    height: 35,
+    width: 160
   },
   postInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    padding: 12,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",

@@ -69,16 +69,19 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   header: {
+    fontFamily: "Poppins-Bold",
     fontSize: 20,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     padding: 10,
   },
   scrollView: {
     marginHorizontal: 10,
+    // paddingVertical: 5
   },
   sectionHeader: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: "Poppins-SemiBold",
+    // fontWeight: 'bold',
     marginVertical: 10,
     color: '#555',
   },

@@ -168,18 +168,20 @@ const modalStyles = StyleSheet.create({
   },
   modalText: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#4caf50",
+    fontFamily: "Inter-Bold",
+    // fontWeight: "bold",
+    color: "#635EE2",
   },
   modalButton: {
     marginTop: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: "#4caf50",
+    backgroundColor: "#635EE2",
     borderRadius: 5,
   },
   modalButtonText: {
     color: "#fff",
+    fontFamily: "Poppins-SemiBold",
     fontSize: 16,
   },
 });

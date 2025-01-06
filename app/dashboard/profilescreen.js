@@ -331,7 +331,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    backgroundColor: 'rgba(99, 94, 226, 0.8)', // #635EE2 with 80% opacity
+    backgroundColor: "#A2A8B0",
+    opacity: 0.9,//'rgba(99, 94, 226, 0.8)', // #635EE2 with 80% opacity
     paddingVertical: 8, // Maintain compact padding
     paddingHorizontal: 20,
     borderRadius: 10, // Slightly rounded corners

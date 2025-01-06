@@ -3,7 +3,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { useRouter } from 'expo-router'; // Import router for navigation
 import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { StyleSheet } from 'react-native';
 
 const DashboardLayout = () => {
@@ -41,32 +41,62 @@ const DashboardLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: '#ffffff', // Tab bar background color
+          borderTopWidth: 0, // Hide the top border
+          elevation: 5, // Shadow for Android
+          height: 50, // Taller height for the tab bar
+          alignItems: 'center', // Center the items horizontally
+          justifyContent: 'center', // Center the items vertically
+          paddingTop: 7, // Optional: Add padding to the bottom for better alignment
+        },
       }}
     >
       <Tabs.Screen
         name="communityscreen"
         options={{
           title: 'Community',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="account-group" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: 40, // adjust size as needed
+                height: 40,
+                borderRadius: 20, // makes it round
+                backgroundColor: focused ? '#635EE2' : 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <MaterialCommunityIcons
+                name={focused ? 'cards' : 'cards'}
+                size={24}
+                color={focused ? '#ffffff' : 'black'}
+              />
+            </View>
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="homescreen"
-        options={{
-          title: 'Home',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="home" size={24} color="black" />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="homescreen"
         options={{
           title: 'Home',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="home" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: 40, // adjust size as needed
+                height: 40,
+                borderRadius: 20, // makes it round
+                backgroundColor: focused ? '#635EE2' : 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <MaterialCommunityIcons
+                name={focused ? 'home' : 'home'}
+                size={24}
+                color={focused ? '#ffffff' : 'black'}
+              />
+            </View>
           ),
           tabBarButton: (props) => (
             <TouchableOpacity
@@ -80,8 +110,23 @@ const DashboardLayout = () => {
         name="notificationscreen"
         options={{
           title: 'Notifications',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="bell" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: 40, // adjust size as needed
+                height: 40,
+                borderRadius: 20, // makes it round
+                backgroundColor: focused ? '#635EE2' : 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <MaterialCommunityIcons
+                name={focused ? 'bell' : 'bell'}
+                size={24}
+                color={focused ? '#ffffff' : 'black'}
+              />
+            </View>
           ),
         }}
       />
@@ -89,8 +134,23 @@ const DashboardLayout = () => {
         name="chat"
         options={{
           title: 'Chat',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="chat" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: 40, // adjust size as needed
+                height: 40,
+                borderRadius: 20, // makes it round
+                backgroundColor: focused ? '#635EE2' : 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <MaterialCommunityIcons
+                name={focused ? 'chat' : 'chat'}
+                size={24}
+                color={focused ? '#ffffff' : 'black'}
+              />
+            </View>
           ),
         }}
       />
@@ -98,8 +158,23 @@ const DashboardLayout = () => {
         name="profilescreen"
         options={{
           title: 'Profile',
-          tabBarIcon: () => (
-            <MaterialCommunityIcons name="account" size={24} color="black" />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: 40, // adjust size as needed
+                height: 40,
+                borderRadius: 20, // makes it round
+                backgroundColor: focused ? '#635EE2' : 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <MaterialCommunityIcons
+                name={focused ? 'account' : 'account'}
+                size={24}
+                color={focused ? '#ffffff' : 'black'}
+              />
+            </View>
           ),
           tabBarButton: (props) => (
             <TouchableOpacity

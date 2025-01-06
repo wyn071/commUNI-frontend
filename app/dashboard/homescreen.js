@@ -158,6 +158,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.homeContainer}>
+
+      <View style={styles.homeheader}>
+        <Image source={require('../../assets/communi-styled.png')} style={styles.communilogo}></Image>
+      </View>
       {/* Post Input Container */}
       <View style={styles.postInputContainer}>
         <Image

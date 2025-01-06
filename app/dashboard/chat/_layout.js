@@ -59,13 +59,14 @@ const App = () => {
 const styles = StyleSheet.create({
   chatContainer: {
     flex: 1,
-    backgroundColor: "#f4f4f4",
-    paddingTop: 20, // Added some padding to avoid top cutoff
+    backgroundColor: "#ffffff",
+    paddingTop: 40, // Added some padding to avoid top cutoff
   },
   chatHeader: {
+    fontFamily: "Poppins-Bold",
     fontSize: 20,
-    fontWeight: "bold",
-    margin: 15,
+    // fontWeight: "bold",
+    padding: 10,
   },
   chatGroupItem: {
     flexDirection: "row",
