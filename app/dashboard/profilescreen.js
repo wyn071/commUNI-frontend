@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
-import { useRouter } from 'expo-router'; // Import router for navigation
-import { useRoute } from '@react-navigation/native'; // Import useRoute to access params
+import { useRouter } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from "@expo/vector-icons";
+import { formatDistanceToNow } from 'date-fns';
 import * as ImagePicker from 'expo-image-picker';
 
 
@@ -96,7 +97,6 @@ export default function ProfileScreen() {
 
   const myProfileImage = profilePicture;
 
-  // Fetch user posts from the backend
   const fetchUserPosts = async () => {
     try {
       const response = await fetch('https://communi-backend-db87843b2e3b.herokuapp.com/get-user-posts', {
@@ -229,7 +229,46 @@ export default function ProfileScreen() {
         </>
       }
 
-      // data={posts}
+      data={posts}
+      renderItem={({ item }) => {
+        return (
+          <View style={styles.postCard}>
+            <View style={styles.postHeader}>
+              <Image
+                source={{ uri: myProfileImage }}
+                style={styles.postAvatar}
+              />
+              <View style={styles.postHeaderText}>
+                <Text style={styles.postTitle}>{fullName}</Text>
+                <Text style={styles.postTime}>
+                  {item.time
+                    ? formatDistanceToNow(new Date(item.time), { addSuffix: true })
+                    : 'Unknown time'}
+                </Text>
+              </View>
+            </View>
+
+            <Text style={styles.postTitle}>{item.title}</Text>
+            <Text style={styles.postContent}>{item.content}</Text>
+
+            {item.image && (
+              <Image source={{ uri: item.image }} style={styles.postImage} />
+            )}
+
+            <View>
+              <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
+                <Ionicons
+                  name={item.likedByUser ? "heart" : "heart-outline"}
+                  size={20}
+                  color="red"
+                  accessibilityLabel="Like button"
+                />
+                <Text style={styles.likeText}>{item.likes} Likes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      }}
       // renderItem={({ item }) => (
       //   <View style={styles.postCard}>
       //     <View style={styles.postHeader}>
@@ -237,85 +276,45 @@ export default function ProfileScreen() {
       //         source={{ uri: myProfileImage }}
       //         style={styles.postAvatar}
       //       />
-      //       <View>
+      //       <View style={styles.postHeaderText}>
       //         <Text style={styles.postTitle}>{fullName}</Text>
+      //         <Text style={styles.postTime}>Just now</Text>
       //       </View>
       //     </View>
+
       //     <Text style={styles.postTitle}>{item.title}</Text>
       //     <Text style={styles.postContent}>{item.content}</Text>
 
       //     {item.image && (
       //       <Image source={{ uri: item.image }} style={styles.postImage} />
       //     )}
-      //     <View style={styles.postActions}>
-      //       <TouchableOpacity onPress={() => handleLike(item.id)}>
+
+      //     <View>
+      //       <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
       //         <Ionicons
       //           name={item.likedByUser ? "heart" : "heart-outline"}
       //           size={20}
       //           color="red"
       //           accessibilityLabel="Like button"
       //         />
-      //         <Text>{item.likes} Likes</Text>
+      //         <Text style={styles.likeText}>{item.likes} Likes</Text>
       //       </TouchableOpacity>
       //     </View>
       //   </View>
       // )}
-      // keyExtractor={(item, index) => index.toString()}
-
-      data={posts}
-      renderItem={({ item }) => (
-        <View style={styles.postCard}>
-          <View style={styles.postHeader}>
-            <Image
-              source={{ uri: myProfileImage }}
-              style={styles.postAvatar}
-            />
-            <View style={styles.postHeaderText}>
-              <Text style={styles.postTitle}>{fullName}</Text>
-              <Text style={styles.postTime}>Just now</Text>
-            </View>
-          </View>
-
-          <Text style={styles.postTitle}>{item.title}</Text>
-          <Text style={styles.postContent}>{item.content}</Text>
-
-          {item.image && (
-            <Image source={{ uri: item.image }} style={styles.postImage} />
-          )}
-
-          <View>
-            <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
-              <Ionicons
-                name={item.likedByUser ? "heart" : "heart-outline"}
-                size={20}
-                color="red"
-                accessibilityLabel="Like button"
-              />
-              <Text style={styles.likeText}>{item.likes} Likes</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
       keyExtractor={(item, index) => index.toString()}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  // postImage: {
-  //   width: '100%', // Make the image take the full width of the post
-  //   height: 250,   // Set the height of the image                                 //
-  //   borderRadius: 10, // Optional: Adds rounded corners
-  //   marginTop: 10,    // Adds spacing between the text and the image
-  // },
   postImage: {
-    width: '100%', // Make the image take the full width of the post
-    height: 250,   // Set the height of the image
-    borderRadius: 10, // Optional: Adds rounded corners
-    marginTop: 10,    // Adds spacing between the text and the image
-    marginBottom: 10, // Adds bottom margin for spacing below the image
+    width: '100%',
+    height: 250,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
   },
-
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
@@ -395,22 +394,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonContainer: {
-    flexDirection: 'row', // Keep buttons in a row
+    flexDirection: 'row',
     marginVertical: 10,
-    justifyContent: 'space-around', // Space out the buttons evenly
+    justifyContent: 'space-around',
     width: '100%',
   },
   button: {
     backgroundColor: "#A2A8B0",
-    opacity: 0.9,//'rgba(99, 94, 226, 0.8)', // #635EE2 with 80% opacity
-    paddingVertical: 8, // Maintain compact padding
+    opacity: 0.9,
+    paddingVertical: 8,
     paddingHorizontal: 20,
-    borderRadius: 10, // Slightly rounded corners
+    borderRadius: 10,
     marginHorizontal: 1,
-    alignItems: 'center', // Center the text
+    alignItems: 'center',
   },
   buttonText: {
-    color: '#fff', // White text for contrast
+    color: '#fff',
     fontWeight: '500',
     fontSize: 14,
   },
@@ -437,28 +436,14 @@ const styles = StyleSheet.create({
   },
   likeText: {
     fontSize: 14,
-    color: '#333', // Text color for likes
-    marginLeft: 5, // Adds spacing between icon and text
+    color: '#333',
+    marginLeft: 5,
   },
   postsSection: {
     backgroundColor: '#fff',
     marginTop: 10,
     paddingHorizontal: 10,
   },
-  // postCard: {
-  //   backgroundColor: '#fff',
-  //   borderRadius: 10,
-  //   padding: 15,                                        //
-  //   elevation: 2,
-  //   marginBottom: 10,
-  // },
-  // postCard: {
-  //   backgroundColor: '#fff',
-  //   borderRadius: 10,
-  //   padding: 15,
-  //   elevation: 2,
-  //   marginBottom: 15, // Increased bottom margin for spacing between posts
-  // },
   postCard: {
     backgroundColor: "#fff",
     margin: 10,
@@ -470,15 +455,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  // postHeader: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',                               //
-  //   // marginBottom: 1,
-  // },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10, // Adds spacing between the header and the content
   },
   postHeaderText: {
     flexDirection: 'column',
@@ -486,36 +465,28 @@ const styles = StyleSheet.create({
   },
   postAvatar: {
     width: 40,
-    height: 40,                                          //
+    height: 40,
     borderRadius: 20,
     marginRight: 10,
   },
-  // postTitle: {
-  //   fontSize: 14,
-  //   fontWeight: 'bold',                                //
-  // },
   postTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333', // Adds color for the title
+    color: '#333',
   },
   postTime: {
     fontSize: 12,
-    color: '#888', // Lighter color for time (subtle)
-    marginTop: 3, // Small space between the name and time
+    color: '#888',
+    marginTop: 3,
   },
   postSubtitle: {
     fontSize: 12,
     color: '#888',
   },
-  // postContent: {
-  //   fontSize: 14,
-  //   color: '#333',                                       //
-  // },
   postContent: {
     fontSize: 14,
     color: '#333',
-    marginBottom: 10, // Adds spacing below the content
+    marginBottom: 10,
   },
 });
 
