@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "communi-frontend",
+    "name": "CommUNI",
     "slug": "communi-frontend",
     "plugins": [
       "expo-router"
