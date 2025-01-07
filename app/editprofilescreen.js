@@ -281,9 +281,15 @@ export default function EditProfileScreen() {
                 </TouchableOpacity> */}
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={saveChanges}>
-                <Text style={styles.buttonText}>Save Changes</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonWrapper}>
+                <TouchableOpacity style={styles.button} onPress={saveChanges}>
+                    <Text style={styles.buttonText}>Save Changes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+                    <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+
         </ScrollView>
     );
 }
@@ -298,7 +304,7 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         // padding: 10,
-        marginLeft: 20,
+        marginLeft: 10,
     },
     header: {
         height: 150,
@@ -331,6 +337,7 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins-Bold",
         // fontWeight: 'bold',
         marginTop: 20,
+        padding: 10,
         marginBottom: 15
     },
     bio: {
@@ -359,16 +366,21 @@ const styles = StyleSheet.create({
         color: '#555',
         fontSize: 12,
     },
+    buttonWrapper: {
+        marginBottom: 15,
+        alignItems: "center"
+    },
     button: {
         backgroundColor: 'rgba(99, 94, 226, 0.8)',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        marginHorizontal: 10,
+        // marginHorizontal: 10,
         alignItems: 'center',
         alignContent: "center",
-        marginBottom: 20,
-        height: 45
+        marginVertical: 3,
+        height: 45,
+        width: "97%"
     },
     buttonText: {
         fontFamily: "Poppins-Regular",
