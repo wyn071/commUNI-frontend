@@ -234,45 +234,53 @@ export default function EditProfileScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.name}>Edit Profile</Text>
-
-            {/* Profile Picture */}
-            <Text style={styles.bio}>Profile Picture</Text>
-            <TouchableOpacity onPress={() => pickImage(setProfilePicture, 'profile')}>
-                <Image source={{ uri: profilePicture }} style={styles.profileImage} />
-            </TouchableOpacity>
-
-            {/* Header Image */}
-            <Text style={styles.bio}>Header Image</Text>
-            <TouchableOpacity onPress={() => pickImage(setHeaderImage, 'header')}>
-                <Image source={{ uri: headerImage }} style={styles.headerImage} />
-            </TouchableOpacity>
-
-            {/* Interests */}
-            <Text style={styles.bio}>Interests</Text>
-            <View style={styles.tagsContainer}>
-                {interestList.map((interest, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[
-                            styles.tag,
-                            interests.includes(interest) ? { backgroundColor: '#635EE2' } : null,
-                        ]}
-                        onPress={() => toggleInterest(interest)}
-                    >
-                        <Text
-                            style={[
-                                styles.tagText,
-                                interests.includes(interest) ? { color: '#fff' } : null,
-                            ]}
-                        >
-                            {interest}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
+            <View style={styles.headerContainer}>
+                <Text style={styles.name}>Edit Profile</Text>
             </View>
 
-            {/* Save Button */}
+            {/* Header Image */}
+            {/* <Text style={styles.bio}>Header Image</Text> */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => pickImage(setHeaderImage, 'header')}>
+                    <Image source={{ uri: headerImage }} style={styles.headerImage} />
+                </TouchableOpacity>
+            </View>
+
+            {/* Profile Picture */}
+            {/* <Text style={styles.bio}>Profile Picture</Text> */}
+            <View style={styles.profileSection}>
+                <TouchableOpacity onPress={() => pickImage(setProfilePicture, 'profile')}>
+                    <Image source={{ uri: profilePicture }} style={styles.profileImage} />
+                </TouchableOpacity>
+                {/* Interests */}
+                <Text style={styles.bio}>Interests</Text>
+                <View style={styles.tagsContainer}>
+                    {interestList.map((interest, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={[
+                                styles.tag,
+                                interests.includes(interest) ? { backgroundColor: '#635EE2' } : null,
+                            ]}
+                            onPress={() => toggleInterest(interest)}
+                        >
+                            <Text
+                                style={[
+                                    styles.tagText,
+                                    interests.includes(interest) ? { color: '#fff' } : null,
+                                ]}
+                            >
+                                {interest}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
+                {/* <TouchableOpacity style={styles.button} onPress={saveChanges}>
+                    <Text style={styles.buttonText}>Save Changes</Text>
+                </TouchableOpacity> */}
+            </View>
+
             <TouchableOpacity style={styles.button} onPress={saveChanges}>
                 <Text style={styles.buttonText}>Save Changes</Text>
             </TouchableOpacity>
@@ -284,11 +292,31 @@ const styles = StyleSheet.create({
     // Reuse your ProfileScreen styles here
     container: {
         flex: 1,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#ffffff',
+        // padding: 10,
+        // marginHorizontal: 10
+    },
+    headerContainer: {
+        // padding: 10,
+        marginLeft: 20,
+    },
+    header: {
+        height: 150,
+        overflow: 'hidden',
     },
     headerImage: {
         width: '100%',
-        height: 150,
+        height: '100%',
+    },
+    profileSection: {
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        marginTop: -1,
+        marginBottom: 7,
+        padding: 15,
+        elevation: 3,
     },
     profileImage: {
         width: 80,
@@ -296,14 +324,20 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         borderWidth: 3,
         borderColor: '#fff',
+        marginTop: -40,
     },
     name: {
         fontSize: 20,
-        fontWeight: 'bold',
-        marginVertical: 5,
+        fontFamily: "Poppins-Bold",
+        // fontWeight: 'bold',
+        marginTop: 20,
+        marginBottom: 15
     },
     bio: {
-        fontSize: 13,
+        marginTop: 40,
+        marginBottom: 10,
+        fontFamily: "Inter-Bold",
+        fontSize: 20,
         textAlign: 'center',
         color: '#555',
     },
@@ -321,20 +355,25 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     tagText: {
+        fontFamily: "Inter-Regular",
         color: '#555',
         fontSize: 12,
     },
     button: {
         backgroundColor: 'rgba(99, 94, 226, 0.8)',
-        paddingVertical: 8,
+        paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
         marginHorizontal: 10,
         alignItems: 'center',
+        alignContent: "center",
+        marginBottom: 20,
+        height: 45
     },
     buttonText: {
+        fontFamily: "Poppins-Regular",
         color: '#fff',
         fontWeight: '500',
-        fontSize: 14,
+        fontSize: 20,
     },
 });
