@@ -512,13 +512,15 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: "white",
     fontSize: 22,
-    fontWeight: "bold"
+    fontFamily: "Inter-SemiBold"
+    // fontWeight: "bold"
   },
   cardTags: {
     flexDirection: "row",
     marginTop: 5
   },
   cardTag: {
+    fontFamily: "Inter-Regular",
     color: "#ddd",
     marginRight: 10
   },
@@ -538,7 +540,8 @@ const styles = StyleSheet.create({
   },
   homeheader: {
     backgroundColor: "#ffffff",
-    paddingVertical: 15,
+    paddingTop: 30,
+    paddingBottom: 15,
     alignItems: "center"
   },
   communilogo: {
@@ -552,6 +555,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+    marginHorizontal: 2
   },
   avatar: {
     width: 40,
@@ -567,11 +571,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
     backgroundColor: "#f8f9fa",
+    fontFamily: "Inter-Regular",
+
   },
   postButton: {
     color: "#007bff",
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     marginLeft: 20,
+    marginRight: 5
   },
   previewImage: {
     width: "100%",
@@ -601,14 +609,17 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   postUser: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
     fontSize: 16,
   },
   postTime: {
+    fontFamily: "Inter-Regular",
     fontSize: 12,
     color: "#888",
   },
   postContent: {
+    fontFamily: "Inter-Regular",
     fontSize: 14,
     marginBottom: 10,
   },

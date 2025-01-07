@@ -350,15 +350,18 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: "Inter-SemiBold",
+    // fontWeight: 'bold',
     marginVertical: 5,
   },
   bio: {
+    fontFamily: "Inter-Regular",
     fontSize: 13,
     textAlign: 'center',
     color: '#555',
   },
   communities: {
+    fontFamily: "Inter-Regular",
     marginTop: 5,
     fontSize: 12,
     color: '#888',
@@ -373,10 +376,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   followNumber: {
+    fontFamily: "Inter-Regular",
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   followLabel: {
+    fontFamily: "Inter-Regular",
     fontSize: 12,
     color: '#555',
   },
@@ -394,6 +399,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   tagText: {
+    fontFamily: "Inter-Regular",
     color: '#555',
     fontSize: 12,
   },
@@ -413,6 +419,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
+    fontFamily: "Inter-SemiBold",
     color: '#fff',
     fontWeight: '500',
     fontSize: 14,
@@ -439,6 +446,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   likeText: {
+    fontFamily: "Inter-Regular",
     fontSize: 14,
     color: '#333',
     marginLeft: 5,
@@ -474,20 +482,24 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   postTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: "Inter-SemiBold",
+    fontSize: 15,
+    // fontWeight: 'bold',
     color: '#333',
   },
   postTime: {
+    fontFamily: "Inter-Regular",
     fontSize: 12,
     color: '#888',
     marginTop: 3,
   },
   postSubtitle: {
+    fontFamily: "Inter-Regular",
     fontSize: 12,
     color: '#888',
   },
   postContent: {
+    fontFamily: "Inter-Regular",
     fontSize: 14,
     color: '#333',
     marginBottom: 10,

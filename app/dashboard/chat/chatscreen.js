@@ -94,8 +94,9 @@ const styles = StyleSheet.create({
     },
     chatHeaderTitle: {
         color: "black",
-        fontSize: 18,
-        fontWeight: "bold",
+        fontSize: 17,
+        // fontWeight: "bold",
+        fontFamily: "Inter-SemiBold"
     },
     chatList: {
         flex: 1,
@@ -116,7 +117,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#e5e5ea",
     },
     chatMessageText: {
-        fontSize: 16,
+        fontFamily: "Poppins-Regular",
+        fontSize: 14,
     },
     chatInputContainer: {
         flexDirection: "row",
@@ -143,7 +145,8 @@ const styles = StyleSheet.create({
     },
     chatSendButtonText: {
         color: "#fff",
-        fontWeight: "bold",
+        // fontWeight: "bold",
+        fontFamily: "Inter-Bold"
     },
 });
 

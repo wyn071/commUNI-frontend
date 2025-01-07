@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
 import ChatScreen from "./chatscreen";  // Import the ChatScreen component
+import { useFonts } from 'expo-font';
+import { SplashScreen } from 'expo-router';
 
 const App = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
 
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+  const [loaded, error] = useFonts({
+    "Poppins-Bold": require("../../../assets/fonts/Poppins/Poppins-Bold.ttf"),
+    "Poppins-Regular": require("../../../assets/fonts/Poppins/Poppins-Regular.ttf"),
+    "Poppins-SemiBold": require("../../../assets/fonts/Poppins/Poppins-SemiBold.ttf"),
+    "Inter-Bold": require("../../../assets/fonts/Inter/Inter-Bold.ttf"),
+    "Inter-Regular": require("../../../assets/fonts/Inter/Inter-Regular.ttf"),
+    "Inter-SemiBold": require("../../../assets/fonts/Inter/Inter-SemiBold.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
   // Sample groups
   const groups = [
     { id: "1", name: "Tech Innovators Guild", message: "Don’t miss this opportunity guys!" },
@@ -91,7 +114,8 @@ const styles = StyleSheet.create({
   },
   chatGroupName: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
+    // fontWeight: "bold",
     color: "#333", // Ensure the name text is visible
   },
   chatGroupMessage: {
