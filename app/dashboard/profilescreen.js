@@ -21,6 +21,7 @@ export default function ProfileScreen() {
   }
 
   const [interestsArray, setInterestsArray] = useState([]);
+  const userEmail = parsedUserData.email;
   const firstName = parsedUserData.firstName;
   const lastName = parsedUserData.lastName;
   const fullName = `${firstName} ${lastName}`;
@@ -33,6 +34,7 @@ export default function ProfileScreen() {
   const [posts, setPosts] = useState([]);
   const [activeTab, setActiveTab] = useState('posts'); // Track active tab
   const [mediaItems, setMediaItems] = useState([]); // To store all media
+  const [likedCommunitiesCount, setLikedCommunitiesCount] = useState(0);
 
 
   const getRandomProfileImage = (id) => {
@@ -66,6 +68,39 @@ export default function ProfileScreen() {
       fetchUserPosts();
     }, [userData.email])
   );
+
+  // useEffect(() => {
+  //   fetchLikedCommunitiesCount(); // Call function to fetch count when ProfileScreen is loaded
+  // }, []);
+
+
+  const fetchLikedCommunitiesCount = async () => {
+    try {
+      const email = parsedUserData.email; // Replace with dynamic email of the logged-in user
+      const response = await fetch(`https://communi-backend-db87843b2e3b.herokuapp.com/likedCommunitiesCount?email=${email}`); // Corrected to use email as a URL parameter
+      console.log(email);
+      if (!response.ok) {
+        throw new Error('Failed to fetch liked communities count');
+      }
+
+      const data = await response.json();
+      setLikedCommunitiesCount(data.count); // Assuming the backend sends { count: 10 }
+    } catch (error) {
+      console.error('Error fetching likedCommunitiesCount:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch liked communities count initially
+    fetchLikedCommunitiesCount();
+
+    // Poll every 5 seconds for updates
+    const intervalId = setInterval(fetchLikedCommunitiesCount, 5000);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [parsedUserData.email]); // Dependencies include email if it changes dynamically
+
 
   const fetchUserImagesAndInterests = async () => {
     fetchUserPosts();
@@ -182,7 +217,7 @@ export default function ProfileScreen() {
             <Text style={styles.bio}>
               {program}{"\n"}{department}{"\n"}{yearlevel}
             </Text>
-            <Text style={styles.communities}>0 communities joined</Text>
+            <Text style={styles.communities}>{likedCommunitiesCount} communities joined</Text>
 
             {/* Followers and Following */}
             <View style={styles.followSection}>

@@ -142,6 +142,8 @@ const Register = () => {
       department: selectedDepartment,
       birthday: birthdayFormatted,
       yearlevel: selectedYearLevel,
+      likedCommunitiesCount: 0,  // Default value when the user registers
+
     };
 
     // console.log('Sending data:', userData);
