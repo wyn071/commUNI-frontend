@@ -7,6 +7,7 @@ import images from "../../assets/images"; // Import the images object
 import HomeScreen, { addNewPosts } from "./homescreen";
 import { useRouter } from 'expo-router';
 import { useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const communityData = [
   { id: 1, name: "Blockchain Builders", tags: ["Blockchain", "Crypto"], logo: images.blockchainBuilders },
@@ -63,31 +64,111 @@ const communityData = [
 const CommunityScreen = () => {
   const route = useRoute();
   const router = useRouter();
-  const { userData } = route.params || {};
+  const { userData, selectedInterests } = route.params || {};
   const parsedUserData = userData ? JSON.parse(userData) : {};
   const email = parsedUserData.email;
   const firstName = parsedUserData.firstName;
+  const mbtiType = parsedUserData.mbtiType || retrievedMbtiType || "";
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const cardPosition = new Animated.Value(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRequestSent, setIsRequestSent] = useState(false);
   const [likeCount, setLikeCount] = useState(0); // Track likeCount with state
-  // let likeCount = 0;
+  const [recommendedCommunities, setRecommendedCommunities] = useState([]);
+  const [retrievedMbtiType, setRetrievedMbtiType] = useState(null); // Variable to store MBTI type
+  const [retrievedInterests, setRetrievedInterests] = useState([]); // Array to store interests
 
+  console.log("We are now in the Community screen");
+  console.log("Here is the received data: ");
+  console.log("User data: ", userData);
+  console.log("Selected interests nasa ubos: ");
+  console.log(selectedInterests);
+  console.log("MBTI Type: ", mbtiType);
 
-  // const saveLikeCountToDatabase = (userId, count) => {
-  //   fetch('https://communi-backend-db87843b2e3b.herokuapp.com/updateLikeCount', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ userId, likeCount: count })
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => console.log('Like count saved:', data))
-  //     .catch(error => console.error('Error saving like count:', error));
-  // };
+  // Fetch data when the component mounts
+  useEffect(() => {
+    getUserPreferences(email);
+  }, []);
+
+  useEffect(() => {
+    console.log('mbtiType:', mbtiType);
+    console.log('selectedInterests:', selectedInterests);
+    // Calculate the matched communities whenever the mbtiType or selected interests change
+    const matchedCommunities = matchCommunities(mbtiType, selectedInterests);
+    setRecommendedCommunities(matchedCommunities);
+  }, [mbtiType, selectedInterests]);
+
+  const getUserPreferences = async (email) => {
+    try {
+      const response = await axios.post('https://communi-backend-db87843b2e3b.herokuapp.com/get-user-preferences', {
+        email,
+      });
+
+      if (response.status === 200) {
+        const { selectedInterests, mbtiType } = response.data.data;
+        setRetrievedInterests(selectedInterests || []); // Store interests array
+        setRetrievedMbtiType(mbtiType || null); // Store MBTI type
+      } else {
+        setError('Failed to fetch preferences');
+      }
+    } catch (error) {
+      setError('Error fetching user preferences');
+      console.error('Error fetching user preferences:', error);
+    } finally {
+      setLoading(false); // Done loading
+    }
+  };
+
+  const matchCommunities = (mbtiType, selectedInterests) => {
+    const matchedCommunities = [];
+
+    const interests = [
+      ...(typeof retrievedInterests === "string" ? retrievedInterests.split(",") : retrievedInterests || []),
+      ...(typeof selectedInterests === "string" ? selectedInterests.split(",") : selectedInterests || [])
+    ];
+
+    // const interests = typeof selectedInterests === "string" ? selectedInterests.split(",") : selectedInterests;
+    // const mbtiType = retrievedMbtiType || mbtiType; // Assign retrievedMbtiType to mbtiType if it exists
+    const traits = mbtiType ? [mbtiType] : []; // Wrap mbtiType in an array if it's not undefined
+
+    console.log("nanako sa matchCommunities function");
+    console.log("Our selected interests look like this now: ");
+    console.log(interests);
+
+    communityData.forEach(community => {
+      let score = 0;
+
+      /// Check for MBTI match
+      if (mbtiType && community.tags.includes(mbtiType)) {
+        score += 2;
+      }
+
+      // Check for interest matches
+      interests.forEach(interest => {
+        if (community.tags.includes(interest.trim())) { // Use trim() for safe matching
+          score += 1;
+        }
+      });
+
+      if (score > 0) {
+        matchedCommunities.push({ ...community, score });
+      }
+    });
+
+    matchedCommunities.sort((a, b) => b.score - a.score);
+
+    return matchedCommunities;
+  };
+
+  const renderCommunity = ({ item }) => (
+    <View style={styles.communityCard}>
+      <Image source={item.logo} style={styles.logo} />
+      <Text style={styles.communityName}>{item.name}</Text>
+      <Text style={styles.communityDescription}>{item.tags.join(', ')}</Text>
+      <Text style={styles.communityScore}>Match Score: {item.score}</Text>
+    </View>
+  );
 
   const saveLikeCountToDatabase = (email, count) => {
     // Ensure userId and count are valid before making the request
@@ -116,6 +197,7 @@ const CommunityScreen = () => {
       .then((data) => {
         // Successfully saved like count
         console.log('Like count saved:', data);
+        // AsyncStorage.setItem('dashboard/profilescreen', JSON.stringify(data));
       })
       .catch((error) => {
         // Handle errors (network errors, or response issues)
@@ -170,20 +252,76 @@ const CommunityScreen = () => {
     });
   };
 
+  // return (
+  //   <View style={styles.dashboardContainer}>
+  //     {currentIndex < communityData.length ? (
+  //       <Animated.View style={[styles.cardContainer, { transform: [{ translateX: cardPosition }] }]}>
+  //         <ImageBackground
+  //           source={communityData[currentIndex].logo}
+  //           style={styles.cardImageBackground}
+  //           imageStyle={styles.cardImage}
+  //           onLoad={handleImageLoad}
+  //         >
+  //           <View style={styles.cardOverlay}>
+  //             <Text style={styles.cardTitle}>{communityData[currentIndex].name}</Text>
+  //             <View style={styles.cardTags}>
+  //               {communityData[currentIndex].tags.map((tag, index) => (
+  //                 <Text key={index} style={styles.cardTag}>
+  //                   {tag}
+  //                 </Text>
+  //               ))}
+  //             </View>
+  //             {isImageLoading && (
+  //               <ActivityIndicator size="large" color="white" style={styles.loader} />
+  //             )}
+  //             <View style={styles.cardButtons}>
+  //               <TouchableOpacity onPress={handlePass} style={styles.button}>
+  //                 <Ionicons name="close-circle" size={100} color="red" />
+  //               </TouchableOpacity>
+  //               <TouchableOpacity onPress={handleLike} style={styles.button}>
+  //                 <Ionicons name="add-circle" size={100} color="green" />
+  //               </TouchableOpacity>
+  //             </View>
+  //           </View>
+  //         </ImageBackground>
+  //       </Animated.View>
+  //     ) : (
+  //       <Text style={styles.noMoreText}>No more communities!</Text>
+  //     )}
+
+
+  //     <Modal
+  //       visible={isModalVisible}
+  //       animationType="fade"
+  //       transparent={true}
+  //       onRequestClose={() => setIsModalVisible(false)}
+  //     >
+  //       <View style={modalStyles.modalOverlay}>
+  //         <View style={modalStyles.modalContainer}>
+  //           <Text style={modalStyles.modalText}>Request Sent</Text>
+  //           <TouchableOpacity onPress={() => setIsModalVisible(false)} style={modalStyles.modalButton}>
+  //             <Text style={modalStyles.modalButtonText}>OK</Text>
+  //           </TouchableOpacity>
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   </View>
+  // );
+
   return (
     <View style={styles.dashboardContainer}>
-      {currentIndex < communityData.length ? (
+      {currentIndex < recommendedCommunities.length ? (
         <Animated.View style={[styles.cardContainer, { transform: [{ translateX: cardPosition }] }]}>
           <ImageBackground
-            source={communityData[currentIndex].logo}
+            source={recommendedCommunities[currentIndex].logo}
             style={styles.cardImageBackground}
             imageStyle={styles.cardImage}
             onLoad={handleImageLoad}
           >
             <View style={styles.cardOverlay}>
-              <Text style={styles.cardTitle}>{communityData[currentIndex].name}</Text>
+              <Text style={styles.cardTitle}>{recommendedCommunities[currentIndex].name}</Text>
               <View style={styles.cardTags}>
-                {communityData[currentIndex].tags.map((tag, index) => (
+                {recommendedCommunities[currentIndex].tags.map((tag, index) => (
                   <Text key={index} style={styles.cardTag}>
                     {tag}
                   </Text>
@@ -207,7 +345,6 @@ const CommunityScreen = () => {
         <Text style={styles.noMoreText}>No more communities!</Text>
       )}
 
-
       <Modal
         visible={isModalVisible}
         animationType="fade"
@@ -225,6 +362,7 @@ const CommunityScreen = () => {
       </Modal>
     </View>
   );
+
 };
 
 const modalStyles = StyleSheet.create({

@@ -31,9 +31,11 @@ const StartScreen = () => {
       />
       <View style={styles.testHeader}>
         <Text style={styles.testTitle}>Take the Personality Test</Text>
-        <Text style={styles.testSubtitle}>
-          Answer a few quick questions to help us personalize your experience.
-        </Text>
+        <View style={styles.testSubtitleWrapper}>
+          <Text style={styles.testSubtitle}>
+            Answer a few quick questions to help us personalize your experience.
+          </Text>
+        </View>
       </View>
 
       <TouchableOpacity

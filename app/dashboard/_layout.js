@@ -20,7 +20,6 @@ const DashboardLayout = () => {
     console.log("navToProfile function called");
     console.log(userData);
     console.log(selectedInterests);
-    // console.log("Your selected interests. These will show up on your profile!: ", selectedInterests);
     router.push({
       pathname: '/dashboard/profilescreen',
       params: { userData, selectedInterests },
@@ -41,7 +40,7 @@ const DashboardLayout = () => {
     console.log("UserData tehee: ", userData);
     router.push({
       pathname: '/dashboard/communityscreen',
-      params: { userData },
+      params: { userData, selectedInterests },
     });
   };
 

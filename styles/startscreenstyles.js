@@ -17,14 +17,17 @@ const styles = StyleSheet.create({
         // marginBottom: 10, // Add spacing between the image and the text
     },
     testTitle: {
-        fontSize: 24,
+        fontSize: 25,
         fontFamily: "Poppins-SemiBold",
         // fontWeight: 'bold',
         color: '#000000', // Black text
         textAlign: 'center',
     },
+    testSubtitleWrapper: {
+        marginHorizontal: 15
+    },
     testSubtitle: {
-        fontSize: 14,
+        fontSize: 15,
         fontFamily: "Poppins-Regular",
         color: '#6b6b6b', // Grey text
         textAlign: 'center',

@@ -147,7 +147,7 @@ const Interests = () => {
           // router.push('/dashboard/communityscreen'); // Make sure the path is correct for the community screen
 
           router.push({
-            pathname: '/dashboard',
+            pathname: '/dashboard/communityscreen',
             params: { userData, selectedInterests },
           });
 
