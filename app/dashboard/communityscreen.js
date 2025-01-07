@@ -7,7 +7,6 @@ import images from "../../assets/images"; // Import the images object
 import HomeScreen, { addNewPosts } from "./homescreen";
 import { useRouter } from 'expo-router';
 import { useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const communityData = [
   { id: 1, name: "Blockchain Builders", tags: ["Blockchain", "Crypto"], logo: images.blockchainBuilders },
