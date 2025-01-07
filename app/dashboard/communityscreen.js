@@ -5,7 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import styles from "../../styles/styles"; // Adjust this path as needed
 import images from "../../assets/images"; // Import the images object
 import HomeScreen, { addNewPosts } from "./homescreen";
-
+import { useRouter } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
 
 const communityData = [
   { id: 1, name: "Blockchain Builders", tags: ["Blockchain", "Crypto"], logo: images.blockchainBuilders },
@@ -60,6 +61,12 @@ const communityData = [
 ];
 
 const CommunityScreen = () => {
+  const route = useRoute();
+  const router = useRouter();
+  const { userData } = route.params || {};
+  const parsedUserData = userData ? JSON.parse(userData) : {};
+  const email = parsedUserData.email;
+  const firstName = parsedUserData.firstName;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const cardPosition = new Animated.Value(0);
@@ -68,17 +75,66 @@ const CommunityScreen = () => {
   const [likeCount, setLikeCount] = useState(0); // Track likeCount with state
   // let likeCount = 0;
 
+
+  // const saveLikeCountToDatabase = (userId, count) => {
+  //   fetch('https://communi-backend-db87843b2e3b.herokuapp.com/updateLikeCount', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ userId, likeCount: count })
+  //   })
+  //     .then(response => response.json())
+  //     .then(data => console.log('Like count saved:', data))
+  //     .catch(error => console.error('Error saving like count:', error));
+  // };
+
+  const saveLikeCountToDatabase = (email, count) => {
+    // Ensure userId and count are valid before making the request
+    if (!email || count === undefined) {
+      console.error('Invalid userId or count');
+      return;
+    }
+
+    fetch('https://communi-backend-db87843b2e3b.herokuapp.com/updateLikeCount', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        likeCount: count,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // Check if response is OK (status code 2xx)
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Successfully saved like count
+        console.log('Like count saved:', data);
+      })
+      .catch((error) => {
+        // Handle errors (network errors, or response issues)
+        console.error('Error saving like count:', error.message);
+      });
+  };
+
   const handleLike = () => {
-    // setIsRequestSent(true);
-    // setTimeout(() => {
-    //   setIsRequestSent(false);
-    // }, 2000);
-    // Alert.alert("Request Sent");
-    // Show custom modal
     animateCard(true);
     setIsModalVisible(true);
-    setLikeCount((prevLikeCount) => prevLikeCount + 1);
+    setLikeCount((prevLikeCount) => {
+      const newLikeCount = prevLikeCount + 1;
+      saveLikeCountToDatabase(email, newLikeCount); // Save the updated like count
+      return newLikeCount;
+    });
     console.log(likeCount); // Logs the updated likeCount
+    console.log("Email: ", email); // Logs the updated likeCount
+    console.log("Name: ", firstName); // Logs the updated likeCount
+    console.log(userData); // Logs the updated likeCount
   };
 
   // const handleLikesUpdate = () => {

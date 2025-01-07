@@ -36,6 +36,15 @@ const DashboardLayout = () => {
     });
   };
 
+  const navToCom = () => {
+    console.log("navtoCom function called");
+    console.log("UserData tehee: ", userData);
+    router.push({
+      pathname: '/dashboard/communityscreen',
+      params: { userData },
+    });
+  };
+
   return (
     <Tabs
       screenOptions={{
@@ -73,6 +82,12 @@ const DashboardLayout = () => {
                 color={focused ? '#ffffff' : 'black'}
               />
             </View>
+          ),
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}  // Spread default tabBarButton props
+              onPress={navToCom}  // Custom onPress function
+            />
           ),
         }}
       />
